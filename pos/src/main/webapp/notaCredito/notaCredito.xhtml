@@ -1,0 +1,276 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:body>
+        <ui:composition template="../template.xhtml">
+
+            <ui:define name="content">
+
+                <h:form id="frmNC">
+                    <br />
+                    <p:panel header="Datos Emisor">
+                        <h:panelGrid columns="2" width="100%" style="vertical-align: top">
+
+                            <h:panelGrid style="vertical-align: top">
+                                <h:panelGrid>
+                                    <p:graphicImage value="../resources/images/cashier.jpeg" />
+                                </h:panelGrid>
+                            </h:panelGrid>
+
+
+
+                            <h:panelGrid columns="2" style="vertical-align: top">
+                                <p:outputLabel value="Razón Social:" style="font-weight: bold" />
+                                <h:outputText value="#{notaCreditoController.issuer.name}" />
+
+                                <p:outputLabel value="RUC:  " style="font-weight: bold" />
+                                <h:outputText value="#{notaCreditoController.issuer.ruc}" />
+                                <p:outputLabel value="Número de telèfono:  "
+                                               style="font-weight: bold" />
+                                <h:outputText value="#{notaCreditoController.issuer.phoneNumbre}" />
+                                <p:outputLabel value="Obligado Contabilidad:  "
+                                               style="font-weight: bold" />
+                                <p:selectBooleanCheckbox
+                                    value="#{notaCreditoController.issuer.accountingLeadsChk}"
+                                    disabled="true" />
+
+                                <p:outputLabel value="NOTA DE CREDITO NO:" style="font-weight: bold" />
+                                <h:outputText value="001001192345678" />
+
+                                <p:outputLabel value="Fecha Autorización"
+                                               style="font-weight: bold" />
+                                <h:outputText
+                                    value="#{notaCreditoController.notaCredito.infoNotaCredito.fechaEmision}" />
+
+                                <p:outputLabel value="Ambiente" style="font-weight: bold" />
+                                <h:outputText
+                                    value="#{notaCreditoController.issuer.environment.valor}" />
+
+                                <p:outputLabel value="Emisión" style="font-weight: bold" />
+                                <h:outputText value="#{notaCreditoController.issuer.emision.valor}" />
+
+                                <p:outputLabel value="Clave de Acceso" style="font-weight: bold" />
+                                <h:outputText value="#{notaCreditoController.notaCredito.infoTributaria.claveAcceso}" />
+                            </h:panelGrid>
+
+                        </h:panelGrid>
+                    </p:panel>
+
+                    <br />
+
+                    <p:panel id="pnlCliente" header="Datos Cliente">
+                        <h:panelGrid columns="3">
+                            <p:outputLabel value="Cliente" style="font-weight: bold" />
+
+                            <p:autoComplete id="customerName" size="50"
+                                            value="#{notaCreditoController.selectedCustomer}"
+                                            completeMethod="#{notaCreditoController.complete}" var="customer"
+                                            itemLabel="#{customer.id}" itemValue="#{customer}"
+                                            converter="#{customerConverter}" forceSelection="true"
+                                            minQueryLength="4">
+                                <p:column style="width:80%">  
+                                    #{customer.id}  -  #{customer.legalName} 
+                                </p:column>
+                                <p:hotkey bind="return"
+                                          action="#{notaCreditoController.searchCustomer('serachCustomer')}"
+                                          update="grdCustomer" />
+                            </p:autoComplete>
+                            <p:commandButton
+                                action="#{notaCreditoController.searchCustomer('serachCustomer')}"
+                                value="Buscar " update="grdCustomer" process="@this customerName"/>
+                        </h:panelGrid>
+
+                        <br />
+
+                        <h:panelGrid id="grdCustomer" columns="4" width="100%">
+                            <p:outputLabel value="Razón Social Nombres:"
+                                           style="font-weight: bold" />
+                            <h:outputText value="#{notaCreditoController.customer.legalName}" />
+
+                            <p:outputLabel value="RUC:" style="font-weight: bold" />
+                            <h:outputText value="#{notaCreditoController.customer.id}" />
+                        </h:panelGrid>
+                    </p:panel>
+
+                    <p:panel header="Comprobante de venta que se modifica">
+                        <h:panelGrid width="100%" columns="2">
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="Tipo de Comprobante que modifica"/>
+                                <p:selectOneMenu value="#{notaCreditoController.notaCredito.infoNotaCredito.codDocModificado}" 
+                                                 requiredMessage="El Campo Tipo de Comprobante que modifica es requerido"
+                                                 required="true">
+                                    <f:selectItem itemLabel="Seleccione"/>
+                                    <f:selectItem itemLabel="Factura" itemValue="01"/>
+                                    <f:selectItem itemLabel="Nota de Débito" itemValue="05"/>
+                                    <f:selectItem itemLabel="Guía de Remisión" itemValue="06"/>
+                                    <f:selectItem itemLabel="Comprobante de Retención" itemValue="07"/>
+                                </p:selectOneMenu>
+
+                            </h:panelGrid>
+
+                            <h:panelGrid columns="2">
+                                <h:outputLabel value="Fecha de emisión Documento" />
+                                <p:calendar required="true" 
+                                            requiredMessage="El campo Fecha de emisión Documento es requerido"
+                                            value="#{notaCreditoController.notaCredito.infoNotaCredito.fechaEmisionDocSus}" 
+                                            showOn="button"/>
+                                
+                                <h:outputLabel value="Fecha de emisión" />
+                                <p:calendar required="true" requiredMessage="el campo Fecha de emisión es requerido"
+                                            value="#{notaCreditoController.notaCredito.infoNotaCredito.fechaEmi}" 
+                                            showOn="button"/>
+                                <h:outputLabel value="Número de Comprobante"/>
+                                <p:inputMask required="true" requiredMessage="El campo Número de Comprobante es requerido"
+                                             value="#{notaCreditoController.notaCredito.infoNotaCredito.numDocModificado}" mask="999-999-999999999"/>
+                            </h:panelGrid>
+                        </h:panelGrid>
+                        <h:panelGrid columns="2" width="100%">
+                            <h:outputLabel value="Motivo"/>
+                            <p:inputTextarea required="true" requiredMessage="El campo Motivo es requerido" 
+                                             value="#{notaCreditoController.notaCredito.infoNotaCredito.motivo}" cols="80"/>
+
+                        </h:panelGrid>
+                    </p:panel>
+                    <br />
+                    <h:panelGrid id="pnlProducts" columns="1" width="100%">
+                        <p:dataTable id="tblProductsInvoice"
+                                     value="#{notaCreditoController.detallesNotaCredito}" var="detalle"
+                                     binding="#{invoiceController.productsTable}">
+                            <f:facet name="header">
+                                <p:column headerText="">
+                                    <p:autoComplete id="productAutoComplete" size="50"
+                                                    value="#{notaCreditoController.selectedProduct}"
+                                                    completeMethod="#{notaCreditoController.queryProduct}"
+                                                    var="product" itemLabel="#{product.code}"
+                                                    itemValue="#{product}" converter="#{productConverter}"
+                                                    forceSelection="true" minQueryLength="2" >
+                                        <p:column style="width:80%">  
+           							#{product.code}  -  #{product.name} 
+                                        </p:column>
+                                        <p:ajax event="itemSelect"
+                                                listener="#{notaCreditoController.addDetalle}" update="tblProductsInvoice" process="@this"/>
+                                    </p:autoComplete>	
+                                    <p:column headerText="">
+                                        <p:commandButton value="Agregar"
+                                                         action="#{notaCreditoController.addDetalle}" process="@this,productAutoComplete"
+                                                         update="tblProductsInvoice" />
+                                    </p:column>
+                                </p:column>
+                                <f:facet name="footer">
+                                    <h:outputText value=" " />
+                                </f:facet>
+                            </f:facet>
+                            <p:column headerText="Codigo" style="text-align: right">
+                                <h:outputText value="#{detalle.codigoInterno}" size="10"
+                                             style="text-align: right">
+                                    
+                                </h:outputText>
+
+                                <f:facet name="footer">
+                                    <h:outputText value=" " />
+                                </f:facet>
+                            </p:column>
+
+                            <p:column headerText="Cantidad" style="text-align: right">
+                                <p:inputText value="#{detalle.cantidad}" size="10"
+                                             style="text-align: right">
+                                    <p:ajax
+                                        listener="#{notaCreditoController.calcularTotal(detalle)}"
+                                        update="tblProductsInvoice" />
+                                </p:inputText>
+                                <f:facet name="footer">
+                                    <h:outputText value=" " />
+                                </f:facet>
+                            </p:column>
+
+                            <p:column headerText="Descripcion">
+                                <h:outputText value="#{detalle.descripcion}" />
+                                <f:facet name="footer">
+                                    <h:outputText value=" " />
+                                </f:facet>
+                            </p:column>
+                            <p:column headerText="Precio unitario" style="text-align: right">
+                                <p:inputText value="#{detalle.precioUnitario}" size="10"
+                                             style="text-align: right">
+                                    <p:ajax
+                                        listener="#{notaCreditoController.calcularTotal(detalle)}"
+                                        update="tblProductsInvoice" />
+                                </p:inputText>
+                                <f:facet name="footer">
+                                    <h:outputText value=" " />
+                                </f:facet>
+                            </p:column>
+                            <p:column rendered="false" headerText="Descuento"
+                                      style="text-align: right">
+                                <p:inputText value="#{detalle.descuento}" size="10"
+                                             style="text-align: right">
+                                    <p:ajax
+                                        listener="#{notaCreditoController.calcularTotal(detalle)}"
+                                        update="tblProductsInvoice" />
+                                </p:inputText>
+                                <f:facet name="footer">
+                                    <h:outputText value=" " />
+                                </f:facet>
+                            </p:column>
+
+                            <p:column headerText="Total" style="text-align: right">
+                                <h:outputText value="#{detalle.precioTotalSinImpuesto}" />
+                                <f:facet name="footer">
+                                    <table>
+
+                                        <c:forEach var="tx"
+                                                   items="#{notaCreditoController.notaCredito.totalizedTaxes}">
+                                            <tr>
+                                                <td><h:outputText
+                                                        value="Subtotal #{tx.taxDescription} #{tx.rate}  %" /></td>
+                                                <td><h:outputText value="#{tx.taxedValue}" /></td>
+                                            </tr>
+                                        </c:forEach>
+                                        <tr>
+                                            <td><p:outputLabel value="Subtotal sin impuestos" /></td>
+                                            <td><h:outputText
+                                                    value="#{notaCreditoController.notaCredito.totalExcludedTaxes}" />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td><p:outputLabel value="Total Decuento" /></td>
+                                            <td><h:outputText
+                                                    value="#{notaCreditoController.notaCredito.totalDiscount}" /></td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td><p:outputLabel value="Valor Total " /></td>
+                                            <td><h:outputText
+                                                    value="#{notaCreditoController.notaCredito.totalDue}" /></td>
+                                        </tr>
+                                    </table>	
+                                </f:facet>
+                            </p:column>
+                            <p:column>
+                                <p:commandLink update="tblProductsInvoice" value="Eliminar"
+                                               action="#{notaCreditoController.deletedetalle(detalle)}">
+
+                                </p:commandLink>
+                            </p:column>
+                        </p:dataTable>
+
+                    </h:panelGrid>
+
+                    <p:outputPanel id="createInvoice">
+                        <p:outputPanel>
+                            <p:commandButton value="Generar Nota de Crédito"
+                                             action="#{notaCreditoController.generarNotaDeCredito}"/>
+                        </p:outputPanel>
+                    </p:outputPanel>
+
+                </h:form>
+
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

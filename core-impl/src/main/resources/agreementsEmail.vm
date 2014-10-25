@@ -1,0 +1,19 @@
+<html>
+<body>
+<p>
+Estimado $cliente,
+</p>
+<p>
+$message
+<a href="$raizURL/factronica-pos/agreements/accept.jsf?customer=$tipoDoc:$doc&token=$token">Acuerdo para la emisi&oacute;n de comprobantes electr&oacute;nicos</a>
+</p>
+<p>
+Si no puede acceder al enlace, por favor copie la siguiente direcci&oacute;n y p&eacute;guelo en su navegador.
+$raizURL/factronica-pos/agreements/accept.jsf?customer=$tipoDoc:$doc&token=$token
+</p>
+<p>
+Atentamente,<br />
+$emisor
+</p>
+</body>
+</html>

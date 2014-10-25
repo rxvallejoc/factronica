@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- Parent -->
+    <parent>
+        <artifactId>factronica-service-parent</artifactId>
+        <groupId>com.obiectumclaro</groupId>
+        <version>1.0.1-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+
+    <!-- Model Version -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Artifact Configuration -->
+    <artifactId>factronica-service-sriclient</artifactId>
+    <packaging>jar</packaging>
+    <name>Factronica Service SRI Client</name>
+
+    <profiles>
+        <profile>
+            <id>generarServicioRecepcionComprobantes</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>jaxws-maven-plugin</artifactId>
+                        <version>1.12</version>
+                        <executions>
+                            <execution>
+                                <id>ServicioRecepcionComprobantes</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>wsimport</goal>
+                                </goals>
+                                <configuration>
+                                    <wsdlUrls>
+                                        <wsdlUrl>
+                                            https://celcer.sri.gob.ec/comprobantes-electronicos-ws/RecepcionComprobantes?wsdl
+                                        </wsdlUrl>
+                                    </wsdlUrls>
+                                    <packageName>com.obiectumclaro.factronica.core.web.service.sri.client.reception
+                                    </packageName>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>generarServicioAutorizacionComprobantes</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>jaxws-maven-plugin</artifactId>
+                        <version>1.12</version>
+                        <executions>
+                            <execution>
+                                <id>ServicioAutorizacionComprobantes</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>wsimport</goal>
+                                </goals>
+                                <configuration>
+                                    <wsdlUrls>
+                                        <wsdlUrl>
+                                            https://celcer.sri.gob.ec/comprobantes-electronicos-ws/AutorizacionComprobantes?wsdl
+                                        </wsdlUrl>
+                                    </wsdlUrls>
+                                    <packageName>
+                                        com.obiectumclaro.factronica.core.web.service.sri.client.authorization
+                                    </packageName>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

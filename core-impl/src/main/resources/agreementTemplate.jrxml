@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="agreementTemplate" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="83d42486-3f34-4f47-ba0e-52f9f90be81d">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="customerName" class="java.lang.String"/>
+	<parameter name="customerEmail" class="java.lang.String"/>
+	<parameter name="customerIdType" class="java.lang.String"/>
+	<parameter name="customerId" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="fa20f396-259c-4ed6-a5f0-e6aba02a23b1" x="0" y="0" width="555" height="79"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="20" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ACUERDO]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="204" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="f8948280-ac1e-411c-9548-0568a85b2133" x="0" y="0" width="555" height="80"/>
+				<textElement/>
+				<text><![CDATA[Mediante el presente el cliente se compromete a Mediante el presente el cliente se compromete a Mediante el presente el cliente se compromete a Mediante el presente el cliente se compromete a Mediante el presente el cliente se compromete a Mediante el presente el cliente se compromete a Mediante el presente el cliente se compromete a Mediante el presente el cliente se compromete a Mediante el presente el cliente se compromete a Mediante el presente el cliente se compromete a Mediante el presente el cliente se compromete a ]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="4f5e06c3-eaef-4289-8a3b-92521279de9a" x="282" y="120" width="195" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{customerId}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="bf03e4a5-d27f-41f9-a4e3-3122b3be3d24" x="87" y="120" width="195" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{customerIdType}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3026104b-93fc-4432-81b1-3bb1271c61b8" x="87" y="140" width="195" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{customerName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="c2a68228-1866-4780-b24a-a1fb46ec9d3c" x="282" y="140" width="195" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$P{customerEmail}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

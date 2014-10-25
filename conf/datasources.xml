@@ -1,0 +1,18 @@
+
+                <datasource jta="true" jndi-name="java:jboss/datasources/factronicaDS" pool-name="java:jboss/datasources/factronicaDS_Pool">
+                    <connection-url>jdbc:postgresql://localhost:5432/factronica</connection-url>
+                    <driver-class>org.postgresql.Driver</driver-class>
+                    <driver>postgresql-jdbc4</driver>
+                    <pool>
+                        <min-pool-size>2</min-pool-size>
+                        <max-pool-size>20</max-pool-size>
+                        <prefill>true</prefill>
+                    </pool>
+                    <security>
+                        <user-name>postgres</user-name>
+                        <password>postgres</password>
+                    </security>
+                    <validation>
+                        <check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
+                    </validation>
+                </datasource>

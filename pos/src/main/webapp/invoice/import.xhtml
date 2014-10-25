@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<body>
+	<ui:composition template="../template.xhtml">
+		
+		<ui:define name="content">
+			<h:form id="uploadForm" enctype="multipart/form-data">
+			
+			<p:wizard id="importWizard"
+				backLabel="Atr&aacute;s"
+				nextLabel="Siguiente">
+			
+				<p:tab id="fileUpload" title="Seleccionar archivo">
+					<p>El archivo que contiene las facturas a ser emitidas en forma masiva debe utilizar la primera línea para 
+					la cabecera de las columnas y desde la segunda agregar los valores de las facturas a emitir. Los valores 
+					deben estar separados por comas y la extensi&oacute;n del archivo debe ser .csv</p>
+					<p>Por ejemplo, el archivo emision-masiva-facturas.csv tiene el siguiente contenido:<br />
+					Tipo Identificaci&oacute;n,N&uacute;mero Identificaci&oacute;n,Fecha Emisi&oacute;n,Cantidad,C&oacute;digo Producto,Informaci&oacute;n Adicional<br />
+					CEDULA,1713872370,30/10/2013,2,BAM,Contrato=1234,Fecha m&aacute;xima de pago=05/12/2013</p>
+					<p>Todos los campos son obligatorios a excepci&oacute; de la Informaci&oacute;n Adicional que tiene el formato nombre=valor. 
+					Este tipo de archivos puede ser generado en cualquier sistema de hoja de c\u00e1lculo como
+					LibreOffice SpreadSheet y MsOffice Excel. En estos sistemas el archivo se vería similar a la 
+					siguiente tabla:</p>
+					<table class="spreadsheet">
+						<tr>
+							<th class="spreadsheet">&nsbp;</th>
+							<th class="spreadsheet">A</th>
+							<th class="spreadsheet">B</th>
+							<th class="spreadsheet">C</th>
+							<th class="spreadsheet">D</th>
+							<th class="spreadsheet">E</th>
+							<th class="spreadsheet">F</th>
+							<th class="spreadsheet">G</th>
+						</tr>
+						<tr>
+							<th class="spreadsheet">&nsbp;2&nsbp;</th>
+							<td class="spreadsheet">CEDULA</td>
+							<td class="spreadsheet">1713872370</td>
+							<td class="spreadsheet">30/10/2013</td>
+							<td class="spreadsheet">2</td>
+							<td class="spreadsheet">BAM</td>
+							<td class="spreadsheet">Contrato=1234</td>
+							<td class="spreadsheet">Fecha m&aacute;xima de pago=05/12/2013</td>
+						</tr>
+					</table>
+					<p>&nsbp;</p>
+					<p:fileUpload 
+						fileUploadListener="#{importInvoicesController.handleFileUpload}"  
+			            mode="advanced"  
+		    	        update="uploadMessages importInvoices"  
+		        	    auto="true"  
+		            	sizeLimit="10240000"
+		            	invalidSizeMessage="El archivo que intenta cargar supera el tama\u00f1o m\u00e1ximo 10 MB"
+		            	allowTypes="/(\.|\/)(csv)$/"
+		            	label="Seleccionar" />
+					
+					<p:commandButton id="importInvoices"
+						value="Importar" 
+						actionListener="#{importInvoicesController.startImportationListener}"
+						ajax="false"
+						disabled="#{importInvoicesController.disableImport}" />
+		  
+		    		<p:growl id="uploadMessages" showDetail="true"/>
+				
+				</p:tab>
+				
+				<p:tab id="fileDownload" title="Reporte" >
+				
+				<p:panel header="Generar reporte y finalizar">
+					
+					<p:commandButton id="downloadLink" 
+						value="Descargar reporte" 
+						ajax="false"
+	        			icon="ui-icon-arrowthichk-s"
+	        			disabled="#{importInvoicesController.disableDownloadReport}"
+	        			actionListener="#{importInvoicesController.downloadReportListener}"> 
+				    	<p:fileDownload value="#{importInvoicesController.report}" />
+					</p:commandButton>
+					
+					<p:commandButton id="btnEnd"
+						value="Finalizar"
+						ajax="false"
+						action="/dashboard?faces-redirect=true" />
+				
+				</p:panel>
+				
+				</p:tab>
+			
+			</p:wizard>
+    		
+			</h:form>
+		</ui:define>
+		
+	</ui:composition>
+</body>
+</html>

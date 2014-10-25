@@ -1,0 +1,281 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+<h:body>
+	<ui:composition template="../template.xhtml">
+
+		<ui:define name="content">
+
+			<h:form id="frmInvoice">
+				<br />
+
+				<p:fieldset legend="Datos del Emisor" toggleable="true"
+					toggleSpeed="500" collapsed="true">
+					<p:ajax event="toggle" listener="#{invoiceController.loadImage}"  />  
+
+					<h:panelGrid columns="2" width="100%" style="vertical-align: top">
+
+						<h:panelGrid columns="2" style="vertical-align: top">
+							<p:outputLabel value="Razón Social:" style="font-weight: bold" />
+							<h:outputText value="#{invoiceController.issuer.name}" />
+
+							<p:outputLabel value="RUC:  " style="font-weight: bold" />
+							<h:outputText value="#{invoiceController.issuer.ruc}" />
+							<p:outputLabel value="Número de telèfono:  "
+								style="font-weight: bold" />
+							<h:outputText value="#{invoiceController.issuer.phoneNumbre}" />
+							<p:outputLabel value="Obligado Contabilidad:  "
+								style="font-weight: bold" />
+							<p:selectBooleanCheckbox
+								value="#{invoiceController.issuer.accountingLeadsChk}"
+								disabled="true" />
+
+							<p:outputLabel value="Ambiente" style="font-weight: bold" />
+							<h:outputText
+								value="#{invoiceController.issuer.environment.valor}" />
+
+							<p:outputLabel value="Emisión" style="font-weight: bold" />
+							<h:outputText value="#{invoiceController.issuer.emision.valor}" />
+
+							<p:outputLabel value="Fecha Emisón:" style="font-weight: bold" />
+							<h:outputText value="#{invoiceController.invoice.issued}" />
+
+
+						</h:panelGrid>
+
+					</h:panelGrid>
+				</p:fieldset>
+
+
+				<br />
+
+				<p:panel header="Datos Cliente">
+					<h:panelGrid columns="3">
+						<p:outputLabel value="Cliente:" style="font-weight: bold" />
+
+						<p:autoComplete id="customerAutoComplete" size="50"
+							value="#{invoiceController.selectedCustomer}"
+							completeMethod="#{invoiceController.queryCustomer}"
+							var="customer" itemLabel="#{customer.id}" itemValue="#{customer}"
+							converter="#{customerConverter}" forceSelection="true"
+							minQueryLength="4">
+							<p:column style="width:80%">  
+           							#{customer.id}  -  #{customer.legalName} 
+        					</p:column>
+							<p:hotkey bind="return"
+								action="#{invoiceController.searchCustomer('serachCustomer')}"
+								update="grdCustomer" process=":formInvoice:customerAutoComplete" />
+						</p:autoComplete>
+						<p:commandButton
+							action="#{invoiceController.searchCustomer('serachCustomer')}"
+							value="Buscar " update="grdCustomer"
+							process="@this,customerAutoComplete" />
+					</h:panelGrid>
+
+					<br />
+
+					<h:panelGrid id="grdCustomer" columns="4" width="100%">
+
+						<p:outputLabel value="RUC:" style="font-weight: bold" />
+						<h:inputText value="#{invoiceController.customer.id}" size="30"
+							disabled="true" />
+
+						<p:outputLabel value="Razón Social / Nombres:"
+							style="font-weight: bold" />
+						<h:inputText value="#{invoiceController.customer.legalName}"
+							size="30" disabled="true" />
+
+						<p:outputLabel value="Direccion:" style="font-weight: bold" />
+						<h:inputTextarea value="#{invoiceController.customer.address}"
+							size="30" disabled="true"
+							style="margin: 2px; width: 208px; height: 33px; " readonly="true" />
+
+						<p:outputLabel value="Telefono:" style="font-weight: bold" />
+						<h:inputText value="#{invoiceController.customer.phone}" size="30"
+							disabled="true" />
+
+						<p:outputLabel value="Email:" style="font-weight: bold" />
+						<h:inputText value="#{invoiceController.customer.email}" size="30"
+							disabled="true" />
+						<p:outputLabel value="Guía Remisión:" style="font-weight: bold" />
+						<p:inputText id="guiaRemision"
+							value="#{invoiceController.invoice.guiaRemision}">
+
+						</p:inputText>
+
+
+					</h:panelGrid>
+				</p:panel>
+				<br />
+				<p:panel header="Producto">
+					<p:autoComplete id="productAutoComplete" size="50"
+						value="#{invoiceController.selectedProduct}"
+						completeMethod="#{invoiceController.queryProduct}" var="product"
+						itemLabel="#{product.code}" itemValue="#{product}"
+						converter="#{productConverter}" forceSelection="true"
+						minQueryLength="2">
+						<p:column style="width:80%">  
+           							#{product.code}  -  #{product.name} 
+        					</p:column>
+						<p:ajax event="itemSelect"
+							listener="#{invoiceController.addProduct}"
+							update="tblProductsInvoice" process="@this" />
+					</p:autoComplete>
+					<p:column headerText="">
+						<p:commandButton value="Agregar"
+							action="#{invoiceController.addProduct}"
+							process="@this,productAutoComplete" update="tblProductsInvoice" />
+					</p:column>
+				</p:panel>
+				<h:panelGrid id="pnlProducts" columns="1" width="100%">
+					<p:panel header="Detalle Factura">
+						<p:dataTable id="tblProductsInvoice"
+							value="#{invoiceController.products}" var="product"
+							binding="#{invoiceController.productsTable}">
+							<f:facet name="header">
+
+								<f:facet name="footer">
+									<h:outputText value=" " />
+								</f:facet>
+							</f:facet>
+							<p:column headerText="Codigo" style="text-align: right">
+								<h:outputText value="#{product.code}" size="10"
+									style="text-align: right">
+
+								</h:outputText>
+
+								<f:facet name="footer">
+									<h:outputText value=" " />
+								</f:facet>
+							</p:column>
+
+							<p:column headerText="Cantidad" style="text-align: right">
+								<p:inputText value="#{product.amount}" size="10"
+									style="text-align: right">
+									<p:ajax event="blur"
+										listener="#{invoiceController.totalProductoCaculation(product)}"
+										update="tblProductsInvoice" process="@this" />
+								</p:inputText>
+								<f:facet name="footer">
+									<h:outputText value=" " />
+								</f:facet>
+							</p:column>
+
+							<p:column headerText="Descripcion">
+								<h:outputText value="#{product.name}" />
+								<f:facet name="footer">
+									<h:outputText value=" " />
+								</f:facet>
+							</p:column>
+							<p:column headerText="Precio unitario" style="text-align: right">
+								<p:inputText value="#{product.unitPrice}" size="10"
+									style="text-align: right">
+									<p:ajax event="blur"
+										listener="#{invoiceController.totalProductoCaculation(product)}"
+										update="tblProductsInvoice" process="@this" />
+								</p:inputText>
+								<f:facet name="footer">
+									<h:outputText value=" " />
+								</f:facet>
+							</p:column>
+							<p:column headerText="Descuento" style="text-align: right"
+								rendered="false">
+								<p:inputText value="#{product.discount}" size="10"
+									style="text-align: right">
+									<p:ajax event="blur"
+										listener="#{invoiceController.totalProductoCaculation(product)}"
+										update="tblProductsInvoice" process="@this" />
+								</p:inputText>
+								<f:facet name="footer">
+									<h:outputText value=" " />
+								</f:facet>
+							</p:column>
+
+							<p:column headerText="Total" style="text-align: right">
+								<h:outputText value="#{product.total}" />
+								<f:facet name="footer">
+									<table>
+
+										<c:forEach var="tx"
+											items="#{invoiceController.invoice.totalizedTaxes}">
+											<tr>
+												<td><h:outputText
+														value="Subtotal #{tx.taxDescription} #{tx.rate}  %" /></td>
+												<td><h:outputText value="#{tx.taxedValue}" /></td>
+											</tr>
+										</c:forEach>
+										<tr>
+											<td><p:outputLabel value="Subtotal sin impuestos" /></td>
+											<td><h:outputText
+													value="#{invoiceController.invoice.totalExcludedTaxes}" />
+											</td>
+										</tr>
+										<tr>
+											<td><p:outputLabel value="Total Decuento"
+													rendered="false" /></td>
+											<td><h:outputText
+													value="#{invoiceController.invoice.totalDiscount}"
+													rendered="false" /></td>
+										</tr>
+										<tr>
+											<td><p:outputLabel value="Propina 10%" /></td>
+											<td><h:outputText
+													value="#{invoiceController.invoice.tip}" /></td>
+										</tr>
+										<tr>
+											<td><p:outputLabel value="Valor Total " /></td>
+											<td><h:outputText
+													value="#{invoiceController.invoice.totalDue}" /></td>
+										</tr>
+									</table>
+								</f:facet>
+							</p:column>
+							<p:column>
+								<p:commandLink update="tblProductsInvoice" value="Eliminar"
+									action="#{invoiceController.deleteProduct()}">
+									<f:setPropertyActionListener value="#{product}"
+										target="#{invoiceController.deleteProduct}" />
+								</p:commandLink>
+							</p:column>
+						</p:dataTable>
+					</p:panel>
+				</h:panelGrid>
+				<p:panel header="Informacion Adicional">
+					<p:dataTable
+						value="#{invoiceController.invoice.additionalInfoList}"
+						var="infoAdicional" id="tblInfoAdicional">
+						<f:facet name="header">
+							<p:commandButton value="Agregar informacion adicional"
+								action="#{invoiceController.addInformacionAdicional}"
+								update="tblInfoAdicional" />
+						</f:facet>
+						<p:column headerText="Valor">
+							<h:inputText value="#{infoAdicional.value}" />
+						</p:column>
+
+						<p:column headerText="Descripcion">
+							<h:inputText value="#{infoAdicional.description}" />
+						</p:column>
+					</p:dataTable>
+				</p:panel>
+				<p:outputPanel id="createInvoice">
+					<p:outputPanel rendered="#{invoiceController.invoice ne null}">
+						<p:commandButton value="Emitir Factura"
+							action="#{invoiceController.generateInvoice}"
+							update="createInvoice" />
+						<h:commandLink value="Imprimir Factura Autorizada"
+							action="#{invoiceController.printInvoice()}" />
+					</p:outputPanel>
+				</p:outputPanel>
+
+			</h:form>
+
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

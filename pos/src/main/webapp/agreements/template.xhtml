@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+<body>
+	<ui:composition template="../template.xhtml">
+	
+		<ui:define name="content">
+			<h:form id="agreementTemplateForm">
+				
+				<p:panel header="Acuerdo para la emisi&oacute;n de comprobantes electr&oacute;nicos">
+					<p:editor id="agreementText"
+						value="#{agreementTemplateBackingBean.template.text}"
+						width="320"
+						height="240"
+						required="true"
+						controls="bold italic underline undo redo link unlink cut copy paste pastetext" />
+					<h:message for="agreementText" />
+				
+				</p:panel>
+
+				<p>
+					<h:commandButton id="send" value="Guardar" action="#{agreementTemplateBackingBean.save}" />
+				</p>
+				
+			</h:form>
+
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
+

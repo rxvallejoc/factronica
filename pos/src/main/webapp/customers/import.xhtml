@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<body>
+	<ui:composition template="../template.xhtml">
+		
+		<ui:define name="content">
+			<h:form id="uploadForm" enctype="multipart/form-data">
+			
+			<p:wizard id="importWizard"
+				backLabel="Atr&aacute;s"
+				nextLabel="Siguiente">
+			
+				<p:tab id="fileUpload" title="Seleccionar archivo">
+			
+					<p:fileUpload 
+						fileUploadListener="#{importCustomerBackingBean.handleFileUpload}"  
+			            mode="advanced"  
+		    	        update="uploadMessages fieldsPanel"  
+		        	    auto="true"  
+		            	sizeLimit="10240000"
+		            	invalidSizeMessage="El archivo que intenta cargar supera el tama\u00f1o m\u00e1ximo 10 MB"
+		            	allowTypes="/(\.|\/)(xls)|(xlsx)$/"
+		            	label="Seleccionar" />
+		  
+		    		<p:growl id="uploadMessages" showDetail="true"/>
+				
+				</p:tab>
+				
+				<p:tab id="mapping" title="Mapear los campos">
+				
+					<p:panel id="fieldsPanel" header="Campos del producto">
+		    			<h:panelGrid columns="2">
+		    				
+		    				<h:outputLabel for="id" 
+		    					value="Identificacion:" />
+		    				<p:selectOneMenu id="id"
+		    					value="#{importCustomerBackingBean.indexes[0]}"
+		    					converter="#{headerLabelConverter}">
+		    					<f:selectItems 
+		    						value="#{importCustomerBackingBean.headers}"
+		    						var="field"
+		    						itemLabel="#{field.label}"
+		    						itemValue="#{field}" />
+		    				</p:selectOneMenu>
+		    				
+		    				<h:outputLabel for="idType" 
+		    					value="Tipo Identificacion:" />
+		    				<p:selectOneMenu id="idType"
+		    					value="#{importCustomerBackingBean.indexes[1]}"
+		    					converter="#{headerLabelConverter}">
+		    					<f:selectItems value="#{importCustomerBackingBean.headers}"
+		    						var="field"
+		    						itemLabel="#{field.label}"
+		    						itemValue="#{field}" />
+		    				</p:selectOneMenu>
+		    				
+		    				<h:outputLabel for="email" value="Correo:" />
+		    				<p:selectOneMenu id="email"
+		    					value="#{importCustomerBackingBean.indexes[2]}"
+		    					converter="#{headerLabelConverter}">
+		    					<f:selectItems value="#{importCustomerBackingBean.headers}"
+		    						var="field"
+		    						itemLabel="#{field.label}"
+		    						itemValue="#{field}" />
+		    				</p:selectOneMenu>
+		    				
+		    				<h:outputLabel for="person" value="Tipo Persona:" />
+		    				<p:selectOneMenu id="person"
+		    					value="#{importCustomerBackingBean.indexes[3]}"
+		    					converter="#{headerLabelConverter}">
+		    					<f:selectItems 
+		    						value="#{importCustomerBackingBean.headers}"
+		    						var="field"
+		    						itemLabel="#{field.label}"
+		    						itemValue="#{field}" />
+		    				</p:selectOneMenu>
+		    				
+		    				<h:outputLabel for="socialReason" value="Razon Social:" />
+		    				<p:selectOneMenu id="socialReason"
+		    					value="#{importCustomerBackingBean.indexes[4]}"
+		    					converter="#{headerLabelConverter}">
+		    					<f:selectItems 
+		    						value="#{importCustomerBackingBean.headers}"
+		    						var="field"
+		    						itemLabel="#{field.label}"
+		    						itemValue="#{field}" />
+		    				</p:selectOneMenu>
+		    				
+		    				<h:outputLabel for="name" value="Nombre:" />
+		    				<p:selectOneMenu id="name"
+		    					value="#{importCustomerBackingBean.indexes[5]}"
+		    					converter="#{headerLabelConverter}">
+		    					<f:selectItems 
+		    						value="#{importCustomerBackingBean.headers}"
+		    						var="field"
+		    						itemLabel="#{field.label}"
+		    						itemValue="#{field}" />
+		    				</p:selectOneMenu>
+		    				
+		    				<h:outputLabel for="lastName" value="Apellido:" />
+		    				<p:selectOneMenu id="lastName"
+		    					value="#{importCustomerBackingBean.indexes[6]}"
+		    					converter="#{headerLabelConverter}">
+		    					<f:selectItems 
+		    						value="#{importCustomerBackingBean.headers}"
+		    						var="field"
+		    						itemLabel="#{field.label}"
+		    						itemValue="#{field}" />
+		    				</p:selectOneMenu>
+		    				
+		    				<h:outputLabel for="address" value="Direccion:" />
+		    				<p:selectOneMenu id="address"
+		    					value="#{importCustomerBackingBean.indexes[7]}"
+		    					converter="#{headerLabelConverter}">
+		    					<f:selectItems 
+		    						value="#{importCustomerBackingBean.headers}"
+		    						var="field"
+		    						itemLabel="#{field.label}"
+		    						itemValue="#{field}" />
+		    				</p:selectOneMenu>
+		    				
+		    				<h:outputLabel for="phone" value="Telefono:" />
+		    				<p:selectOneMenu id="phone"
+		    					value="#{importCustomerBackingBean.indexes[8]}"
+		    					converter="#{headerLabelConverter}">
+		    					<f:selectItems 
+		    						value="#{importCustomerBackingBean.headers}"
+		    						var="field"
+		    						itemLabel="#{field.label}"
+		    						itemValue="#{field}" />
+		    				</p:selectOneMenu>
+		    				
+		    			</h:panelGrid>
+		    			
+		    		</p:panel>
+				
+				</p:tab>
+				
+				
+				
+				<p:tab id="fileDownload" title="Reporte" >
+				
+				<p:panel header="Generar reporte y finalizar">
+					<p:commandButton id="importProduct"
+							value="Importar" 
+							actionListener="#{importCustomerBackingBean.startImportationListener}"
+							ajax="false"
+							disabled="#{importCustomerBackingBean.disableImport}" />
+					
+					<p:commandButton id="downloadLink" 
+						value="Descargar reporte" 
+						ajax="false"
+	        			icon="ui-icon-arrowthichk-s"
+	        			disabled="#{importCustomerBackingBean.disableDownloadReport}"
+	        			actionListener="#{importCustomerBackingBean.downloadReportListener}"> 
+				    	<p:fileDownload value="#{importCustomerBackingBean.report}" />
+					</p:commandButton>
+					
+					<p:commandButton id="btnEnd"
+						value="Finalizar"
+						ajax="false"
+						action="/customers/list?faces-redirect=true" />
+				
+				</p:panel>
+				
+				</p:tab>
+			
+			</p:wizard>
+    		
+			</h:form>
+		</ui:define>
+		
+	</ui:composition>
+</body>
+</html>

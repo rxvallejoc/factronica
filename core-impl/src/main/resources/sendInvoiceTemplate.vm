@@ -1,0 +1,7 @@
+<html>
+<p>
+Hola $customer.name se ha generado su factura no: $invoiceNumber
+</p>
+Para imprimir su factura<br />
+http://184.106.156.189:8180/factronica-pos/invoice/print.jsf?id=$invoiceId
+</html>

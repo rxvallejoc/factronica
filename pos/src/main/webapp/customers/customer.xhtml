@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <body>
+        <ui:composition template="../template.xhtml">
+            <ui:define name="metadata">
+                <f:metadata>
+                    <f:viewParam name="customerId"
+                                 value="#{customerBackingBean.customerId}" />
+                </f:metadata>
+                <f:event type="preRenderView"
+                         listener="#{customerBackingBean.searchForCustomer}" />
+
+            </ui:define>
+            <ui:define name="content">
+                <h:form id="productForm">
+                    <p:panel header="Administraci&oacute;n de Clientes">
+                        <h:panelGrid columns="3">
+
+                            <h:outputLabel for="idType" value="Tipo de identificaci&oacute;n:" />
+                            <p:selectOneMenu id="idType" required="true"
+                                             value="#{customerBackingBean.newCustomer.idType}"
+                                             validator="#{customerBackingBean.holdIdType}">
+                                <f:selectItems value="#{customerBackingBean.idTypes}" />
+                            </p:selectOneMenu>
+                            <h:message for="idType" />
+
+                            <h:outputLabel for="id" value="Identificaci&oacute;n:" />
+                            <p:inputText id="id" value="#{customerBackingBean.newCustomer.id}" required="true"
+                                         validator="#{customerBackingBean.validateId}" />
+                            <h:message for="id" />
+
+                            <h:outputLabel for="email" value="Correo electr&oacute;nico:" />
+                            <p:inputText id="email" value="#{customerBackingBean.newCustomer.email}"
+                                         required="true" />
+                            <h:message for="email" />
+
+                            <h:outputLabel for="person" value="Persona:" />
+                            <p:selectOneRadio id="person" value="#{customerBackingBean.newCustomer.person}"
+                                         required="true">
+                                         <f:selectItem itemLabel="Natural" itemValue="NATURAL" />
+                                         <f:selectItem itemLabel="Jur&iacute;dica" itemValue="JURIDICA" />
+                                         <p:ajax event="valueChange" 
+                                         	update="@form"
+                                         	process="@this" />
+                            </p:selectOneRadio>
+                            <h:message for="person" />
+
+                            <h:outputLabel for="name" value="Nombre:"
+                            	rendered="#{customerBackingBean.naturalPerson}" />
+                            <p:inputText id="name" 
+                            	value="#{customerBackingBean.newCustomer.name}" 
+                            	required="#{customerBackingBean.naturalPerson}"
+                            	rendered="#{customerBackingBean.naturalPerson}" />
+                            <h:message for="name"
+                            	rendered="#{customerBackingBean.naturalPerson}" />
+                            
+                            <h:outputLabel value="Apellidos:" for="lastName"
+                            	rendered="#{customerBackingBean.naturalPerson}"/>
+                            <p:inputText id="lastName" 
+                            	value="#{customerBackingBean.newCustomer.lastName}" 
+                            	required="#{customerBackingBean.naturalPerson}"
+                            	rendered="#{customerBackingBean.naturalPerson}" />
+                            <h:message for="lastName"
+                            	rendered="#{customerBackingBean.naturalPerson}" />
+
+                            <h:outputLabel id="socialReasonLabel" value="Raz&oacute;n social:" for="socialReason"
+                            	rendered="#{!customerBackingBean.naturalPerson}" />
+                            <p:inputText id="socialReason" 
+                            	value="#{customerBackingBean.newCustomer.socialReason}" 
+                            	required="#{!customerBackingBean.naturalPerson}"
+                            	rendered="#{!customerBackingBean.naturalPerson}" />
+                            <h:message for="socialReason"
+                            	rendered="#{!customerBackingBean.naturalPerson}" />
+                            
+                            <h:outputLabel for="address" value="Direcci&oacute;n:" />
+                            <p:inputText id="address" value="#{customerBackingBean.newCustomer.address}"
+                                         required="true" />
+                            <h:message for="address" />
+
+                            <h:outputLabel for="phone" value="Tel&eacute;fono:" />
+                            <p:inputText id="phone" value="#{customerBackingBean.newCustomer.phone}"
+                                         required="true" />
+                            <h:message for="phone" />
+
+                        </h:panelGrid>
+
+                        <p>
+                            <p:commandButton id="save" value="Guardar cliente"
+                                             action="#{customerBackingBean.save}" update="@form" />
+                        </p>
+                    </p:panel>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+    </body>
+</html>

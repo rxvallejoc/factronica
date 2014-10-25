@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	
+<body>
+	<ui:composition template="../template.xhtml">
+	
+		<ui:define name="metadata">
+		
+			<f:metadata>
+				<f:viewParam name="to" value="#{sendAgreementBean.toIds}" />
+				<f:viewParam name="template" value="#{sendAgreementBean.template}" />
+			</f:metadata>
+			
+			<f:event type="preRenderView" listener="#{sendAgreementBean.searchTemplate}" />
+			<f:event type="preRenderView" listener="#{sendAgreementBean.searchDestinataries}" />
+			
+		</ui:define>
+	
+		<ui:define name="content">
+			<h:form id="agreementForm">
+				<h:panelGrid columns="3">
+
+					<h:outputLabel value="&nbsp;&nbsp;Para:" />
+					<h:dataTable id="destinataries" 
+						value="#{newEmail.destinataries}"
+						var="dest">
+							
+							<h:column>
+								<h:outputLabel value="#{dest.legalName}" />
+							</h:column>
+					
+					</h:dataTable>
+					<h:outputLabel value="" />
+
+					<h:outputLabel for="emailSubject" value="Asunto:" />
+					<p:inputText id="emailSubject" 
+						value="#{newEmail.subject}"
+						style="width: 320px"
+						required="true" />
+					<h:message for="emailSubject" />
+
+					<h:outputLabel value="" />
+					<p:editor id="email"
+						value="#{newEmail.text}"
+						width="320"
+						height="240"
+						required="true"
+						controls="undo redo link unlink cut copy paste pastetext" />
+					<h:message for="email" />
+
+				</h:panelGrid>
+
+				<p>
+					<h:commandButton id="send" value="Enviar" action="#{sendAgreementBean.send}" />
+				</p>
+				
+			</h:form>
+
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
+

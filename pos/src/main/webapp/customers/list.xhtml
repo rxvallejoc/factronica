@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<body>
+	<ui:composition template="../template.xhtml">
+		<ui:define name="content">
+			<h:form>
+				<p:dataTable id="tableCustomers" 
+					value="#{listCustomersBackingBean.customers}" var="c" paginator="true" rows="10"  
+                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"  
+                 rowsPerPageTemplate="5,10,15">
+					<f:facet name="header">
+						<h:outputText value="Clientes " />
+						<p:commandButton value="Nuevo Cliente" action="/customers/customer.jsf?faces-redirect=true" />
+					</f:facet>
+					<p:column headerText="Identificaci&#243;n">
+						<h:outputText value="#{c.id}" />					
+					</p:column>
+					<p:column headerText="Raz&oacute;n social">
+						<h:outputText value="#{c.legalName}" />					
+					</p:column>
+					<p:column headerText="Email">
+						<h:outputText value="#{c.email}" />					
+					</p:column>
+					<p:column headerText="Acuerdo">
+						<h:outputText value="#{c.agreement.status.description}" rendered="#{c.agreement != null}" />					
+					</p:column>
+					<p:column headerText="Editar">
+						<p:commandLink value="Editar" process="@this"
+							action="#{listCustomersBackingBean.goToEdit(c.id)}" />					
+					</p:column>
+					
+					<p:column headerText="Enviar Acuerdo">
+						<h:commandLink action="#{listCustomersBackingBean.sendAgremment(c.idType, c.id)}" value="Enviar" />					
+					</p:column>
+					
+					<p:column headerText="Imprimir Acuerdo">
+						<h:commandLink action="#{listCustomersBackingBean.printAgremment(c.idType, c.id)}" value="Imprimir" />					
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

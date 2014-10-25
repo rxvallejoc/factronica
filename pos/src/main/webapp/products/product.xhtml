@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<body>
+	<ui:composition template="../template.xhtml">
+		<ui:define name="metadata">
+			<f:metadata>
+				<f:viewParam name="productId"
+					value="#{manageProductBackingBean.productId}" />
+			</f:metadata>
+			<f:event type="preRenderView"
+				listener="#{manageProductBackingBean.searchForPruduct}" />
+		</ui:define>
+		<ui:define name="content">
+			<p:messages />
+			<h:form id="productForm">
+				<p:panel header="Descripci&oacute;n del producto">
+					<h:panelGrid columns="3">
+						<h:outputLabel for="productCode" value="C&#243;digo:" />
+						<p:inputText id="productCode"
+							value="#{manageProductBackingBean.newProduct.code}"
+							required="true" requiredMessage="Codigo de producto es requerido" />
+						<p:message for="productCode" />
+						<h:outputLabel for="alternateCode" value="C&#243;digo Alternativo" />
+						<p:inputText id="alternateCode"
+							value="#{manageProductBackingBean.newProduct.alternateCode}" />
+						<p:message for="alternateCode" />
+						<h:outputLabel for="productName" value="Nombre:" />
+						<p:inputText id="productName"
+							value="#{manageProductBackingBean.newProduct.name}"
+							required="true" requiredMessage="Nombre de producto es requerido" />
+						<p:message for="productName" />
+						<h:outputLabel for="productDescription" value="Descripci&#243;n:" />
+						<p:inputText id="productDescription"
+							value="#{manageProductBackingBean.newProduct.description}"
+							required="true"
+							requiredMessage="Descripci&#243;n de producto es requerido" />
+						<p:message for="productDescription" />
+						<h:outputLabel for="productType" value="Tipo de Producto" />
+						<p:selectOneMenu id="productType" required="true"
+							value="#{manageProductBackingBean.newProduct.productType}">
+							<f:selectItem itemLabel="Seleccionar"/>
+							<f:selectItems value="#{manageProductBackingBean.productTypes}" />
+						</p:selectOneMenu>
+						<p:message for="productType" />
+						<h:outputLabel for="unitPrice" value="Precio Unitario" />
+						<p:inputText id="unitPrice"
+							value="#{manageProductBackingBean.newProduct.unitPrice}"
+							type="number" />
+						<p:message for="unitPrice" />
+					</h:panelGrid>
+				</p:panel>
+				<p:panel header="Impuestos aplicables al producto">
+					<p:pickList id="taxesPick"
+						value="#{manageProductBackingBean.taxes}" var="tax"
+						itemValue="#{tax.pk}" itemLabel="#{tax.description}"
+						converter="#{taxValuePickListConverter}" showSourceFilter="true"
+						showTargetFilter="true" filterMatchMode="contains">
+						<f:facet name="sourceCaption">Impuestos</f:facet>
+						<f:facet name="targetCaption">Aplicados</f:facet>
+						<p:column>#{tax.taxId.description} - </p:column>
+						<p:column>#{tax.description}</p:column>
+					</p:pickList>
+				</p:panel>
+				<p:dataTable id="additionalInfoListTable"
+					value="#{manageProductBackingBean.newProduct.additionalProductInformationList}"
+					var="ai">
+					<f:facet name="header">
+						<h:outputText value="Informaci&#243;n Adicional" />
+						<p:commandButton value="Agregar"
+							action="#{manageProductBackingBean.addAdditionalInfo()}"
+							update="additionalInfoListTable" process="@this" />
+					</f:facet>
+					<p:column headerText="Nombre">
+						<p:inplace label="#{ai.nameLabel}">
+							<p:inputText value="#{ai.name}">
+								<p:ajax process="@this" event="blur" />
+							</p:inputText>
+						</p:inplace>
+					</p:column>
+					<p:column headerText="Valor">
+						<p:inplace label="#{ai.valueLabel}">
+							<p:inputText value="#{ai.value}">
+								<p:ajax process="@this" event="blur" />
+							</p:inputText>
+						</p:inplace>
+					</p:column>
+					<p:column headerText="Eliminar">
+						<p:commandLink value="Eliminar"
+							action="#{manageProductBackingBean.removeAdditionalInfo(ai)}"
+							update="additionalInfoListTable" process="@this" />
+					</p:column>
+				</p:dataTable>
+				<p:commandButton id="save" value="A&ntilde;adir nuevo producto"
+					action="#{manageProductBackingBean.updateProduct()}" />
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

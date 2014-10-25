@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:p="http://primefaces.org/ui"
+	template="template.xhtml">
+	<ui:define name="content">
+		<h:form>
+			<p:panel header="Acceso al sistema">
+				<div align="center" style="width: 100%">
+					<h:panelGrid columns="2" styleClass="form"
+						columnClasses="label, input">
+						<h:outputText value="Usuario" />
+						<h:inputText value="#{accessBackingBean.username}"
+							required="true" requiredMessage="Ingrese el nombre de usuario" />
+						<h:outputText value="Password" />
+						<h:inputSecret value="#{accessBackingBean.password}"
+							required="true" requiredMessage="Ingrese el password" />
+					</h:panelGrid>
+					<p:commandButton value="Ingresar" action="#{accessBackingBean.login()}"
+						styleClass="formButton" style="width:250px" />
+				</div>
+			</p:panel>
+		</h:form>
+	</ui:define>
+</ui:composition>

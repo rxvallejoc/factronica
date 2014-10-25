@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence
+    http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
+	version="2.0">
+
+	<persistence-unit name="factronica">
+
+		<jta-data-source>java:jboss/datasources/factronicaDS</jta-data-source>
+
+		<class>com.obiectumclaro.factronica.core.model.AdditionalProductInformation</class>
+		<class>com.obiectumclaro.factronica.core.model.Agreement</class>
+		<class>com.obiectumclaro.factronica.core.model.Customer</class>
+		<class>com.obiectumclaro.factronica.core.model.Email</class>
+		<class>com.obiectumclaro.factronica.core.model.EmailTemplate</class>
+		<class>com.obiectumclaro.factronica.core.model.InvoiceItem</class>
+		<class>com.obiectumclaro.factronica.core.model.Invoice</class>
+		<class>com.obiectumclaro.factronica.core.model.AdditionaInformationCustomer</class>
+		<class>com.obiectumclaro.factronica.core.model.Issuer</class>
+		<class>com.obiectumclaro.factronica.core.model.Product</class>
+		<class>com.obiectumclaro.factronica.core.model.Role</class>
+		<class>com.obiectumclaro.factronica.core.model.Tax</class>
+		<class>com.obiectumclaro.factronica.core.model.TaxValue</class>
+		<class>com.obiectumclaro.factronica.core.model.TotalizedTax</class>
+		<class>com.obiectumclaro.factronica.core.model.User</class>
+		<class>com.obiectumclaro.factronica.core.model.Document</class>
+		<class>com.obiectumclaro.factronica.core.model.DocumentReport</class>
+		<class>com.obiectumclaro.factronica.core.model.ReportEntry</class>
+		<properties>
+			<property name="hibernate.hbm2ddl.auto" value="update" />
+			<property name="hibernate.show_sql" value="false" />
+			<property name="hibernate.format_sql" value="true" />
+			<property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+		</properties>
+
+	</persistence-unit>
+
+</persistence>

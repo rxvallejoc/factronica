@@ -1,0 +1,70 @@
+body {
+	margin-left: 5%;
+	margin-right: 5%;
+	border: 1px outset silver;
+	padding: 10px 10px 10px 10px;
+	font-family: Verdana, Geneva, Arial, sans-serif;
+	font-size: 12px !important;
+}
+
+#pageHeader {
+	width: 100%;
+	height: 140px;
+	margin-bottom: 10px;
+	border-bottom: 2px solid silver;
+	padding-bottom: 10px;
+}
+
+#pageHeader #logobox {
+	width: 30%;
+	float: left;
+}
+
+#pageHeader #logobox #prodName {
+	font-size: 24px;
+	font-weight: bolder;
+	letter-spacing: 2px;
+}
+
+#pageHeader #logobox #motto {
+	font-size: 14px;
+	font-style: italic;
+}
+
+#pageHeader #toolsbox {
+	width: 70%;
+	float: right;
+	text-align: right;
+}
+
+#pageHeader #searchbox {
+	width: 70%;
+	float: right;
+	text-align: right;
+}
+
+#pageHeader #menubar {
+	width: 70%;
+	float: right;
+	text-align: right;
+}
+
+#pageFooter {
+	border-top: 2px solid silver;
+	padding-top: 10x;
+	font-family: mono;
+	font-size: small;
+	text-align: center;
+}
+
+.ui-dialog-title{
+	font-size: 12px !important;
+}
+
+table.spreadsheet {
+	border-collapse:collapse;
+	border: 1px solid black;
+}
+table.spreadsheet th, table.spreadsheet td {
+	border: 1px solid black;
+}

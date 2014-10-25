@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:p="http://primefaces.org/ui"
+   template="../template.xhtml">
+   <ui:define name="content">
+      <h:form>
+	      <p:panel header="Nuevo Usuario">
+				<h:panelGrid columns="4">
+					<h:outputText value="Nombre de Usuario" />
+					<h:inputText value="#{addUserBackingBean.user.username}"
+						required="true" requiredMessage="Ingrese el nombre de usuario" />
+					<h:outputText value="Password" />
+					<h:inputSecret value="#{addUserBackingBean.user.password}"
+						required="true" requiredMessage="Ingrese el password" />
+					
+					<h:outputText value="Nombres" />
+					<h:inputText value="#{addUserBackingBean.user.name}"
+						required="true" requiredMessage="Ingrese los nombres" />
+					
+					<h:outputText value="Apellidos" />
+					<h:inputText value="#{addUserBackingBean.user.lastname}" />
+				</h:panelGrid>
+				
+				<p:panel header="Roles">
+					<h:selectManyCheckbox value="#{addUserBackingBean.roleIds}">
+						<f:selectItems value="#{addUserBackingBean.roles}" var="r"
+							itemLabel="#{r.name}" itemValue="#{r.pk}" />
+					</h:selectManyCheckbox>
+				</p:panel>
+				
+				<p:commandButton value="Guardar" action="#{addUserBackingBean.addUser()}" />
+			</p:panel>
+		</h:form>
+   </ui:define>
+</ui:composition>

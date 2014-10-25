@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:insert name="metadata" />
+
+<h:head>
+	<title><ui:insert name="title">Factronica Point Of Sale</ui:insert>
+	</title>
+	<h:outputStylesheet library="style" name="default.css" />
+</h:head>
+
+<h:body>
+
+	<div id="pageHeader">
+		<p id="logobox">
+			<img src="#{resource['images:billing.jpeg']}"
+				alt="Factronica - online billing" style="width: 250px; height: 130px" />
+		</p>
+		<div id="toolsbox">
+			<h:form>
+				<p:menubar>
+					<p:menuitem value="Dashboard" url="/dashboard.jsf"
+						icon="ui-icon-close" />
+					<p:menuitem value="Preferences" url="/" icon="ui-icon-close" />
+					<f:facet name="options">
+						<p:inputText style="margin-right:10px" />
+						<p:commandButton type="button" value="Buscar"
+							icon="ui-icon-search" />
+						<h:outputText value="Usuario"
+							rendered="#{userSession.user != null}" />
+						<h:outputText value=": #{userSession.user.username}"
+							rendered="#{userSession.user != null}" />
+						<p:commandButton value="Salir"
+							action="#{accessBackingBean.logout()}"
+							rendered="#{userSession.user != null}" icon="ui-icon-extlink" />
+					</f:facet>
+				</p:menubar>
+			</h:form>
+		</div>
+		<div id="searchbox"></div>
+	</div>
+	<h:form>
+		<p:growl id="messages" autoUpdate="true" />
+		<p:ajaxStatus onstart="statusDialog.show();"
+				onsuccess="statusDialog.hide();" />
+
+			<p:dialog modal="true" widgetVar="statusDialog" header="Procesando........" 
+				draggable="false" closable="false">
+				<p:graphicImage value="../resources/images/ajaxloadingbar.gif" />
+		</p:dialog>
+		<p:menubar rendered="#{userSession.user != null}">
+			<p:submenu label="Facturacion" icon="ui-icon-contact"
+				rendered="#{request.isUserInRole('pos') or request.isUserInRole('backoffice')}">
+				<p:menuitem value="Factura" url="/invoice/invoice.jsf"
+					rendered="#{request.isUserInRole('pos')}" icon="ui-icon-contact" />
+				<p:menuitem value="Retencion" url="#"
+					rendered="#{request.isUserInRole('pos')}" icon="ui-icon-contact" />
+				<p:menuitem value="Envio de Acuerdo" url="/agreements/send.jsf"
+					rendered="#{request.isUserInRole('pos')}" icon="ui-icon-contact" />
+				<p:menuitem value="Imprimir Acuerdo" url="/agreements/print.jsf"
+					rendered="#{request.isUserInRole('pos')}" icon="ui-icon-contact" />
+				<p:menuitem value="Importar" url="/invoice/import.jsf"
+					icon="ui-icon-contact" update="messages"
+					rendered="#{request.isUserInRole('backoffice')}" />
+				<p:menuitem value="Importar Transtelco" url="/invoice/importInvoicesFromTabFile.jsf"
+					icon="ui-icon-contact" update="messages"
+					rendered="#{request.isUserInRole('backoffice')}" />
+			</p:submenu>
+			<p:submenu label="Comprobantes Adicionales" icon="ui-icon-document"
+				rendered="#{request.isUserInRole('pos')}">
+				<p:menuitem value="Nota de Credito" url="/notaCredito/notaCredito.jsf" icon="ui-icon-contact" />
+				<p:menuitem value="Nota de Debito" url="#" icon="ui-icon-contact" />
+				<p:menuitem value="Guia de Remision" url="#" icon="ui-icon-contact" />
+			</p:submenu>
+			<p:submenu label="Productos" icon="ui-icon-pencil"
+				rendered="#{request.isUserInRole('pos') or request.isUserInRole('backoffice')}">
+				<p:menuitem value="Productos" url="/products/list.jsf"
+					icon="ui-icon-pencil" update="messages"
+					rendered="#{request.isUserInRole('pos')}" />
+				<p:menuitem value="Importar" url="/products/import.jsf"
+					icon="ui-icon-pencil" update="messages"
+					rendered="#{request.isUserInRole('backoffice')}" />
+			</p:submenu>
+			<p:submenu label="Administracion" icon="ui-icon-gear"
+				rendered="#{request.isUserInRole('admin')}">
+				<p:menuitem value="Usuarios" url="/users/list.jsf"
+					icon="ui-icon-disk" update="messages" />
+				<p:menuitem value="Clientes" url="/customers/list.jsf"
+					icon="ui-icon-disk" update="messages" />
+				<p:menuitem value="Importacion Clientes" url="/customers/import.jsf"
+					icon="ui-icon-disk" update="messages" />
+				<p:menuitem value="Acuerdos" url="/agreements/template.jsf" icon="ui-icon-disk"
+					update="messages" />
+
+			</p:submenu>
+
+		</p:menubar>
+	</h:form>
+	<br></br>
+	<br></br>
+	<ui:insert name="content" />
+	<br />
+	<div id="pageFooter">&copy; 2012, ObiectumClaro S.A.</div>
+
+</h:body>
+
+</html>

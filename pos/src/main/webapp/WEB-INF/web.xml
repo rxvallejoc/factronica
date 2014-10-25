@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation=" http://java.sun.com/xml/ns/javaee       http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<description>online elctronic billing</description>
+	<display-name>Factronica</display-name>
+	<context-param>
+		<param-name>javax.faces.PROJECT_STAGE</param-name>
+		<param-value>Development</param-value>
+	</context-param>
+	<context-param>
+		<param-name>primefaces.THEME</param-name>
+		<param-value>bootstrap</param-value>
+	</context-param>
+	<context-param>
+		<param-name>javax.faces.INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL</param-name>
+		<param-value>true</param-value>
+	</context-param>
+	<!-- File upload -->
+	<filter>
+		<filter-name>PrimeFaces FileUpload Filter</filter-name>
+		<filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>PrimeFaces FileUpload Filter</filter-name>
+		<servlet-name>Faces Servlet</servlet-name>
+	</filter-mapping>
+	<!-- Faces Servlet -->
+	<servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>*.jsf</url-pattern>
+	</servlet-mapping>
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+	</welcome-file-list>
+	<error-page>
+		<error-code>403</error-code>
+		<location>/error/403.jsf</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/error/404.jsf</location>
+	</error-page>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>factronica-secure-admin</web-resource-name>
+			<url-pattern>/users/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>admin</role-name>
+		</auth-constraint>
+	</security-constraint>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>factronica-secure-pos</web-resource-name>
+			<url-pattern>/agreements/print.jsf</url-pattern>
+			<url-pattern>/agreements/send.jsf</url-pattern>
+			<url-pattern>/customers/*</url-pattern>
+			<url-pattern>/products/add.jsf</url-pattern>
+			<url-pattern>/products/list.jsf</url-pattern>
+			<url-pattern>/invoice/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>pos</role-name>
+		</auth-constraint>
+	</security-constraint>
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>factronica-secure-backoffice</web-resource-name>
+			<url-pattern>/invoice/import.jsf</url-pattern>
+			<url-pattern>/invoice/importInvoicesFromTabFile.jsf</url-pattern>
+			<url-pattern>/customers/*</url-pattern>
+			<url-pattern>/products/import.jsf</url-pattern>
+			<url-pattern>/products/list.jsf</url-pattern>
+		</web-resource-collection>
+		<auth-constraint>
+			<role-name>backoffice</role-name>
+		</auth-constraint>
+	</security-constraint>
+	<login-config>
+		<auth-method>FORM</auth-method>
+		<form-login-config>
+			<form-login-page>/login.jsf</form-login-page>
+			<form-error-page>/login.jsf</form-error-page>
+		</form-login-config>
+	</login-config>
+	<security-role>
+		<role-name>pos</role-name>
+	</security-role>
+	<security-role>
+		<role-name>admin</role-name>
+	</security-role>
+	<security-role>
+		<role-name>backoffice</role-name>
+	</security-role>
+</web-app>

@@ -1,0 +1,13 @@
+
+                <security-domain name="factronicaSecurity">
+                    <authentication>
+                        <login-module code="Database" flag="required">
+                            <module-option name="dsJndiName" value="java:jboss/datasources/factronicaDS"/>
+                            <module-option name="principalsQuery" value="select pwd from facuser u where u.username=? and u.status='ACT'"/>
+                            <module-option name="rolesQuery" value="select r.name, 'Roles' from facuserrol ur, facuser u, facrole r where r.pk = ur.roleid and u.pk = ur.userid and u.username=?"/>
+                            <module-option name="hashAlgorithm" value="MD5"/>
+                            <module-option name="hashEncoding" value="Base64"/>
+                            <module-option name="hashCharset" value="UTF-8"/>
+                        </login-module>
+                    </authentication>
+                </security-domain>

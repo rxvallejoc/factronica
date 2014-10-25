@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
+    
+<h:body>
+	<ui:composition template="template.xhtml">
+
+		<ui:define name="content">
+			<h:form id="frmDashboard">
+				<p:messages id="messages" autoUpdate="true" closable="true" />
+				<h:panelGrid columns="1" width="100%">
+				<p:panel header="Facturacion">
+					<h:panelGrid columns="1">
+						<p:commandLink value="Emitir Factura"
+							action="/invoice/invoice.jsf?faces-redirect=true"></p:commandLink>
+                                                 <p:commandLink value="Carga Masiva Facturas"
+							action="/invoice/import.jsf?faces-redirect=true"></p:commandLink>
+                                                 
+						<p:commandLink value="Emitir Comprobante Retencion"  action="#"></p:commandLink>
+						<p:commandLink value="Emitir Nota de Credito" action="/notaCredito/notaCredito.jsf?faces-redirect=true"></p:commandLink>
+						<p:commandLink value="Emitir Nota de Debito" action="#"></p:commandLink>
+						<p:commandLink value="Emitir Guia de Remision" action="#"></p:commandLink>
+					</h:panelGrid>
+				</p:panel>
+				<p:panel header="Cliente">
+					<h:panelGrid columns="1">
+						<p:commandLink value="Lista de  Clientes"
+							action="/customers/list.jsf?faces-redirect=true" />
+						<p:commandLink value="Crear Cliente"
+							action="/customers/add.jsf?faces-redirect=true" />
+					</h:panelGrid>
+				</p:panel>
+				<p:panel header="Producto">
+					<h:panelGrid columns="1">
+						<p:commandLink value="Lista de  Productos"
+							action="/products/list.jsf?faces-redirect=true" />
+						<p:commandLink value="Crear Producto"
+							action="/products/add.jsf?faces-redirect=true" />
+					</h:panelGrid>
+				</p:panel>
+				<p:panel header="SRI">
+					<h:panelGrid columns="1">
+						<p:commandLink value="Lista Blanca" action="#"></p:commandLink>
+
+						<p:commandLink value="Local Abierto" action="#"></p:commandLink>
+
+					</h:panelGrid>
+				</p:panel>
+				</h:panelGrid>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</h:body>
+</html>

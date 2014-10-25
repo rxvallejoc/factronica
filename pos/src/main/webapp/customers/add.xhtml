@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:c="http://java.sun.com/jsp/jstl/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+    <body>
+        <ui:composition template="../template.xhtml">
+
+            <ui:define name="content">
+                <h:form id="customerForm">
+                    <p:panel header="A&ntilde;adir nuevo cliente">
+                        <h:panelGrid id="container" columns="3">
+
+                            <h:outputLabel for="idType" value="Tipo de identificaci&oacute;n:" />
+                            <p:selectOneMenu id="idType" required="true"
+                                             value="#{newCustomer.idType}" 
+                                             validator="#{addCustomerBean.holdIdType}"
+                                            >
+                                <f:selectItems value="#{addCustomerBean.idTypes}" />
+                                <f:ajax event="change" listener="#{addCustomerBean.lengthIdentifier}"  render="id"/>
+                            </p:selectOneMenu>
+                            <h:message for="idType" />
+
+                            <h:outputLabel for="id" value="Identificaci&oacute;n:" />
+                            <p:inputText id="id" value="#{newCustomer.id}"
+                                         maxlength="#{addCustomerBean.idLength}"
+                                         required="true" 
+                                         validator="#{addCustomerBean.validateId}" />
+                            <h:message for="id" />
+
+                            <h:outputLabel for="email" value="Correo electr&oacute;nico:" />
+                            <p:inputText id="email" value="#{newCustomer.email}"
+                                         required="true" />
+                            <h:message for="email" />
+
+                            <h:outputLabel for="name" value="Nombres:" />
+                            <p:inputText id="name" value="#{newCustomer.name}"
+                                         required="true" />
+                            <h:message for="name" />
+
+                            <h:outputLabel value="Apellidos:" for="lastName"/>
+                            <p:inputText id="lastName" value="#{newCustomer.lastName}" required="true"/>
+                            <h:message for="lastName"/>
+
+                            <h:outputLabel value="Razòn social:" for="socialReason"/>
+                            <p:inputText id="socialReason" value="#{newCustomer.socialReason}" required="true"/>
+                            <h:message for="socialReason"/>
+
+                            <h:outputLabel for="address" value="Direcci&oacute;n:" />
+                            <p:inputText id="address" value="#{newCustomer.address}"
+                                         required="true" />
+                            <h:message for="address" />
+
+                            <h:outputLabel for="phone" value="Tel&eacute;fono:" />
+                            <p:inputText id="phone" value="#{newCustomer.phone}"
+                                         required="true" />
+                            <h:message for="phone" />
+
+                        </h:panelGrid>
+                        
+                        <p>
+                            <h:commandButton id="save" value="A&ntilde;adir cliente" action="#{addCustomerBean.add}"/>
+                        </p>
+
+                    </p:panel>
+                </h:form>
+
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<body>
+	<ui:composition template="../template.xhtml">
+		
+		<ui:define name="content">
+			<h:form id="uploadForm" enctype="multipart/form-data">
+			
+			<p:wizard id="importWizard"
+				backLabel="Atr&aacute;s"
+				nextLabel="Siguiente">
+			
+				<p:tab id="fileUpload" title="Seleccionar archivo">
+			
+					<p:fileUpload 
+						fileUploadListener="#{importProductsBackingBean.handleFileUpload}"  
+			            mode="advanced"  
+		    	        update="uploadMessages fieldsPanel"  
+		        	    auto="true"  
+		            	sizeLimit="10240000"
+		            	invalidSizeMessage="El archivo que intenta cargar supera el tama\u00f1o m\u00e1ximo 10 MB"
+		            	allowTypes="/(\.|\/)(xls)|(xlsx)$/"
+		            	label="Seleccionar" />
+		  
+		    		<p:growl id="uploadMessages" showDetail="true"/>
+				
+				</p:tab>
+				
+				<p:tab id="mapping" title="Mapear los campos">
+				
+					<p:panel id="fieldsPanel" header="Campos del producto">
+		    			<h:panelGrid columns="2">
+		    				
+		    				<h:outputLabel for="productCode" 
+		    					value="C&#243;digo:" />
+		    				<p:selectOneMenu id="productCode"
+		    					value="#{importProductsBackingBean.indexes[0]}"
+		    					converter="#{headerLabelConverter}">
+		    					<f:selectItems 
+		    						value="#{importProductsBackingBean.headers}"
+		    						var="field"
+		    						itemLabel="#{field.label}"
+		    						itemValue="#{field}" />
+		    				</p:selectOneMenu>
+		    				
+		    				<h:outputLabel for="altProductCode" 
+		    					value="C&#243;digo alternativo:" />
+		    				<p:selectOneMenu id="altProductCode"
+		    					value="#{importProductsBackingBean.indexes[1]}"
+		    					converter="#{headerLabelConverter}">
+		    					<f:selectItems value="#{importProductsBackingBean.headers}"
+		    						var="field"
+		    						itemLabel="#{field.label}"
+		    						itemValue="#{field}" />
+		    				</p:selectOneMenu>
+		    				
+		    				<h:outputLabel for="productName" value="Nombre:" />
+		    				<p:selectOneMenu id="productName"
+		    					value="#{importProductsBackingBean.indexes[2]}"
+		    					converter="#{headerLabelConverter}">
+		    					<f:selectItems value="#{importProductsBackingBean.headers}"
+		    						var="field"
+		    						itemLabel="#{field.label}"
+		    						itemValue="#{field}" />
+		    				</p:selectOneMenu>
+		    				
+		    				<h:outputLabel for="productDesc" value="Descripci&#243;n:" />
+		    				<p:selectOneMenu id="productDesc"
+		    					value="#{importProductsBackingBean.indexes[3]}"
+		    					converter="#{headerLabelConverter}">
+		    					<f:selectItems 
+		    						value="#{importProductsBackingBean.headers}"
+		    						var="field"
+		    						itemLabel="#{field.label}"
+		    						itemValue="#{field}" />
+		    				</p:selectOneMenu>
+		    				
+		    				<h:outputLabel for="productType" value="Tipo:" />
+		    				<p:selectOneMenu id="productType"
+		    					value="#{importProductsBackingBean.indexes[4]}"
+		    					converter="#{headerLabelConverter}">
+		    					<f:selectItems 
+		    						value="#{importProductsBackingBean.headers}"
+		    						var="field"
+		    						itemLabel="#{field.label}"
+		    						itemValue="#{field}" />
+		    				</p:selectOneMenu>
+		    				
+		    				<h:outputLabel for="productPrice" value="Precio unitario:" />
+		    				<p:selectOneMenu id="productPrice"
+		    					value="#{importProductsBackingBean.indexes[5]}"
+		    					converter="#{headerLabelConverter}">
+		    					<f:selectItems 
+		    						value="#{importProductsBackingBean.headers}"
+		    						var="field"
+		    						itemLabel="#{field.label}"
+		    						itemValue="#{field}" />
+		    				</p:selectOneMenu>
+		    				
+		    			</h:panelGrid>
+		    			
+		    		</p:panel>
+				
+				</p:tab>
+				
+				<p:tab id="taxes" title="Seleccionar los impuestos">
+				
+					<p:panel header="Impuestos">
+					
+						<h:panelGrid columns="2">
+							
+							<h:outputLabel for="genTaxes" value="Tarifa a aplicar:" />
+							<p:selectOneMenu id="genTaxes"
+								value="#{importProductsBackingBean.tax}"
+								converter="#{taxValueConverter}">
+								<f:selectItems value="#{importProductsBackingBean.taxes}"
+									var="taxValue"
+									itemValue="#{taxValue}"
+									itemLabel="#{taxValue.description}" />
+							</p:selectOneMenu>
+							
+						</h:panelGrid>
+					
+						<p:commandButton id="importProduct"
+							value="Importar" 
+							actionListener="#{importProductsBackingBean.startImportationListener}"
+							ajax="false"
+							disabled="#{importProductsBackingBean.disableImport}" />
+					
+					</p:panel>
+				
+				</p:tab>
+				
+				<p:tab id="fileDownload" title="Reporte" >
+				
+				<p:panel header="Generar reporte y finalizar">
+					
+					<p:commandButton id="downloadLink" 
+						value="Descargar reporte" 
+						ajax="false"
+	        			icon="ui-icon-arrowthichk-s"
+	        			disabled="#{importProductsBackingBean.disableDownloadReport}"
+	        			actionListener="#{importProductsBackingBean.downloadReportListener}"> 
+				    	<p:fileDownload value="#{importProductsBackingBean.report}" />
+					</p:commandButton>
+					
+					<p:commandButton id="btnEnd"
+						value="Finalizar"
+						ajax="false"
+						action="/products/list?faces-redirect=true" />
+				
+				</p:panel>
+				
+				</p:tab>
+			
+			</p:wizard>
+    		
+			</h:form>
+		</ui:define>
+		
+	</ui:composition>
+</body>
+</html>
