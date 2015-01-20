@@ -3,6 +3,10 @@
  */
 package com.obiectumclaro.factronica.core.access.key;
 
+import com.obiectumclaro.factronica.core.enumeration.DocumentType;
+import com.obiectumclaro.factronica.core.enumeration.Environment;
+import com.obiectumclaro.factronica.core.enumeration.IssuingMode;
+
 import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -10,10 +14,6 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
-import com.obiectumclaro.factronica.core.enumeration.DocumentType;
-import com.obiectumclaro.factronica.core.enumeration.Environment;
-import com.obiectumclaro.factronica.core.enumeration.IssuingMode;
 
 /**
  * Class used to build access keys.

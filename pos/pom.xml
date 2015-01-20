@@ -17,6 +17,9 @@
         <dependency>
             <groupId>com.obiectumclaro</groupId>
             <artifactId>factronica-core-impl</artifactId>
+            <version>1.0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+            <type>ejb</type>
         </dependency>
         <!-- JEE6 -->
         <dependency>

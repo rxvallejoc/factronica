@@ -1,0 +1,10 @@
+<jboss-deployment-structure xmlns="urn:jboss:deployment-structure:1.0">
+
+	<ear-subdeployments-isolated>false</ear-subdeployments-isolated>
+
+	<deployment>
+		<dependencies>
+		</dependencies>
+	</deployment>
+
+</jboss-deployment-structure>

@@ -1,18 +1,17 @@
 package com.obiectumclaro.factronica.core.model.access;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 
 public abstract class BaseEaoBean {
 
-	@PersistenceContext
+	@PersistenceContext(unitName = "factronica")
 	protected EntityManager entityManager;
 
 	/**
