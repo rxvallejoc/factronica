@@ -160,7 +160,7 @@ public class EmacDocumentSubmissionConsumer implements MessageListener {
     private void sendMailWithAttachments(String email, List<Attachment> attachments) {
         LOG.info("Sending mail ........");
         final MailMessage multiPartMessage = new MailMessageBuilder()
-                .from("notificaciones@hidrocentro.net")
+                .from("factura@emac.gob.ec")
                 .addTo(email)
                 .subject("Facturacion Electronica")
                 .body(
