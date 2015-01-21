@@ -65,7 +65,10 @@ public class TimerProcesamientoBean {
 	public Future<Integer> process(){
 		LOG.info("Inicia Envio de Solicitudes SRI");
 		emacInvoiceBean.getDocumentsForRequest().forEach(emacDocument -> {
-			EmacDocumentSubmissionMessage message = invoiceBuilder.generateXMLFile(emacDocument, issuer);
+			EmacDocumentSubmissionMessage message = null;
+			if(emacDocument.getCoddoc().equals("01")){
+				message = invoiceBuilder.generateXMLFile(emacDocument, issuer);
+			}
 			producer.queueDocumentSubmission(message);
 		});
 		LOG.info("Finaliza Envio de Solicitudes SRI");
