@@ -8,6 +8,7 @@ import com.obiectumclaro.factronica.core.web.service.sri.client.reception.Compro
 import com.obiectumclaro.factronica.core.web.service.sri.client.reception.RecepcionComprobantes;
 import com.obiectumclaro.factronica.core.web.service.sri.client.reception.RecepcionComprobantesService;
 import com.obiectumclaro.factronica.core.web.service.sri.client.reception.RespuestaSolicitud;
+import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -18,8 +19,13 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.*;
-import java.io.*;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -28,6 +34,7 @@ import java.util.List;
 
 @Stateful
 public class OnlineInvoiceAuthorization implements InvoiceAuthorization {
+    public static final Logger LOG = Logger.getLogger(OnlineInvoiceAuthorization.class);
 
     private RespuestaSolicitud requestResponse;
     private RespuestaComprobante queryResponse;
@@ -95,6 +102,7 @@ public class OnlineInvoiceAuthorization implements InvoiceAuthorization {
     }
 
     private RecepcionComprobantesService startRecepcionComprobantesService(final ServiceEnvironment environment) {
+        LOG.info("Ambiente: "+environment);
         try {
             final String wsdlLocation = environment.wsdlLocation + URL_REQUEST;
             return new RecepcionComprobantesService(new URL(wsdlLocation),

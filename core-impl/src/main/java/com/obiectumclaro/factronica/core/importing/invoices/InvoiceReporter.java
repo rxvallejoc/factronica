@@ -3,14 +3,15 @@
  */
 package com.obiectumclaro.factronica.core.importing.invoices;
 
-import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-
 import com.obiectumclaro.factronica.core.importing.invoices.tab.InvoiceLine;
 import com.obiectumclaro.factronica.core.importing.invoices.tab.InvoiceSubmissionMessage;
 import com.obiectumclaro.factronica.core.model.InvoicingStatus;
 import com.obiectumclaro.factronica.core.model.ReportEntry;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import java.util.Date;
 
 /**
  * @author ipazmino
@@ -41,5 +42,12 @@ public class InvoiceReporter {
 
 	entityManager.persist(reportEntry);
     }
+
+	public void recordEntryFor(String invoiceNumber,Date requestOn,String requestor,String accessKey, String details,InvoicingStatus invoicingStatus){
+		final ReportEntry reportEntry = new ReportEntry(requestor,
+				requestOn, invoiceNumber, "EMAC", accessKey,
+				invoicingStatus, details);
+		entityManager.persist(reportEntry);
+	}
 
 }
