@@ -1,6 +1,7 @@
 package com.obiectumclaro.factronica.core.emac.timer;
 
 
+import com.obiectumclaro.factronica.core.emac.access.EmacInvoiceBean;
 import com.obiectumclaro.factronica.core.enumeration.DocumentType;
 import com.obiectumclaro.factronica.core.importing.invoices.InvoiceReporter;
 import com.obiectumclaro.factronica.core.importing.invoices.NotAnswerException;
@@ -47,6 +48,8 @@ public class EmacDocumentAuthorizationConsumer implements MessageListener {
     private InvoiceAuthorization authorization;
     @EJB
     private SMTPMailProducer mailProducer;
+    @EJB
+    private EmacInvoiceBean emacInvoiceBean;
     @Override
     public void onMessage(Message queueMessage) {
         EmacDocumentSubmissionMessage message = extractMessage(queueMessage);
@@ -67,23 +70,31 @@ public class EmacDocumentAuthorizationConsumer implements MessageListener {
                     mensaje.getIdentificador(), mensaje.getInformacionAdicional())
                     + "\n");
         }
-
+        LOG.info("Inicia el envio de mail");
         final String authNumber = autorizacion.getNumeroAutorizacion();
         if ("AUTORIZADO".equals(autorizacion.getEstado())) {
-            LOG.info("Finaliza consulta de autorizacion");
             saveAuthorizationDocument(message, autorizacion);
             recordResult(message, InvoicingStatus.AUTORIZED,messagesInTheResponse.toString());
+            message.getSriDocument().setEstadoproceso("AU");
+            message.getSriDocument().setNumeroautorizacion(authNumber);
+            emacInvoiceBean.update(message.getSriDocument());
 
             List<Attachment> attachments;
             try {
                 attachments = generateAttachments(autorizacion,message, authNumber);
                 sendNotificationToEmail(message, autorizacion, authNumber, attachments);
             } catch (InvoicePrintException e) {
+                message.getSriDocument().setEstadoproceso("NA");
+                message.getSriDocument().setMensajeerror("Falla al crear el adjunto");
+                emacInvoiceBean.update(message.getSriDocument());
                 recordResult(message, InvoicingStatus.FAILED_TO_GENERATE_ATTACHEMETS,e.getMessage());
                 LOG.error("access key = " + message.getAccessKey(), e);
             }
         } else {
             recordResult(message, InvoicingStatus.NOT_AUTORIZED,messagesInTheResponse.toString());
+            message.getSriDocument().setEstadoproceso("NA");
+            message.getSriDocument().setMensajeerror(messagesInTheResponse.toString());
+            emacInvoiceBean.update(message.getSriDocument());
         }
 
     }

@@ -5,10 +5,12 @@ package com.obiectumclaro.factronica.core.emac.timer;
 
 import com.obiectumclaro.factronica.api.invoice.exception.SignerException;
 import com.obiectumclaro.factronica.core.emac.access.EmacInvoiceBean;
+import com.obiectumclaro.factronica.core.enumeration.DocumentType;
 import com.obiectumclaro.factronica.core.importing.invoices.InvoiceReporter;
 import com.obiectumclaro.factronica.core.importing.invoices.tab.InvoiceLine;
 import com.obiectumclaro.factronica.core.mail.SMTPMailProducer;
 import com.obiectumclaro.factronica.core.mail.SMTPMailService;
+import com.obiectumclaro.factronica.core.model.Document;
 import com.obiectumclaro.factronica.core.model.InvoicingStatus;
 import com.obiectumclaro.factronica.core.service.InvoiceBean;
 import com.obiectumclaro.factronica.core.sign.SignerBean;
@@ -26,6 +28,7 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
+import java.util.Date;
 
 
 @MessageDriven(activationConfig = {
@@ -65,41 +68,20 @@ public class EmacDocumentSubmissionConsumer implements MessageListener {
             message.setSignedDocument(signedDocument);
             LOG.info("Finaliza firma documento");
 
-
-            LOG.info("Inicia envio");
             boolean response = requestAuthorization(message);
             if(response){
+                LOG.info("Inicia envio a consultar autorizacion");
                 emacDocumentAuthorizationProducer.queueAuthorizationQuery(message);
+                LOG.info("Inicia envio a consultar autorizacion");
             }
 
-//            final List<Autorizacion> authResponse = authorization.syncRequest(signedDocument, environment, 15);
-//            LOG.info("Finaliza envio");
-//            if (!authResponse.isEmpty()) {
-//                final Autorizacion autorizacion = authResponse.get(0);
-//                final String authorizationStatus = autorizacion.getEstado();
-//                LOG.info(String.format("Invoice status: %s", authorizationStatus));
-//
-//                if (AuthorizationState.AUTORIZADO.name().equals(authorizationStatus)) {
-//                    authInvoice = autorizacion.getNumeroAutorizacion() == null ? null : autorizacion;
-//                    List<Attachment> attachments = createAttachments(message,autorizacion);
-//                    stroreDocument(message, AuthorizationState.AUTORIZADO);
-//                    sendMailWithAttachments(message.getSriDocument().getEmail(), attachments);
-//                }
-//            } else {
-//                LOG.info("Existe Problemas con el  Servicio de Rentas Internas ");
-//                stroreDocument(message, AuthorizationState.NO_AUTORIZADO);
-//            }
-
-//        } catch (ReturnedInvoiceException rie) {
-//            final Comprobante comprobante = rie.getComprobantes().get(0);
-//            stroreDocument(message, AuthorizationState.NO_AUTORIZADO);
         } catch (SignerException e) {
             LOG.error(e, e);
             invoiceReporter.recordEntryFor(message.getSriDocument().getSecuencial(),message.getRequestedOn(),"EMAC",message.getAccessKey(),message.toString(),InvoicingStatus.RETURNED);
-//            stroreDocument(message, AuthorizationState.NO_AUTORIZADO);
+            stroreDocument(message, AuthorizationState.NO_AUTORIZADO);
         } catch (Exception e) {
             invoiceReporter.recordEntryFor(message.getSriDocument().getSecuencial(),message.getRequestedOn(),"EMAC",message.getAccessKey(),message.toString(),InvoicingStatus.RETURNED);
-//            stroreDocument(message, AuthorizationState.NO_AUTORIZADO);
+            stroreDocument(message, AuthorizationState.NO_AUTORIZADO);
         }
         message.getSriDocument().setEstadoproceso("PA");
         emacInvoiceBean.update(message.getSriDocument());
@@ -159,40 +141,17 @@ public class EmacDocumentSubmissionConsumer implements MessageListener {
     }
 
 
-//    private List<Attachment> createAttachments(final EmacDocumentSubmissionMessage message,final Autorizacion autorizacion)
-//            throws InvoicePrintException {
-//        List<Attachment> attachments = new ArrayList<Attachment>();
-//        attachments.add(new Attachment(authInvoice.getComprobante().getBytes(), String.format("%s.xml",
-//                authInvoice.getNumeroAutorizacion()), "text/xml"));
-//        attachments.add(new Attachment(invoiceBean.printInvoice(autorizacion, authInvoice.getComprobante(), message.getIssuer()), String
-//                .format("%s.pdf", authInvoice.getNumeroAutorizacion()), "application/pdf"));
-//        return attachments;
-//    }
-
-//    private void sendMailWithAttachments(String email, List<Attachment> attachments) {
-//        LOG.info("Sending mail ........");
-//        final MailMessage multiPartMessage = new MailMessageBuilder()
-//                .from("factura@emac.gob.ec")
-//                .addTo(email)
-//                .subject("Facturacion Electronica")
-//                .body(
-//                        "Estimado Consumidor, \nAdjunto enviamos su factura electrónica. \n¡Gracias por ser parte de nuestro compromiso con el medio ambiente!\n EMAC-EP ")
-//                .contentType("text/plain").hasAttachment(Boolean.TRUE).attachments(attachments).build();
-//        mailProducer.queueMailForDelivery(multiPartMessage);
-//        LOG.info("Mail sended ........");
-//    }
-
-//    private void stroreDocument(EmacDocumentSubmissionMessage message, AuthorizationState auth) {
-//        Document document = new Document();
-//        document.setAuthorizationNumber(authInvoice != null ? authInvoice.getNumeroAutorizacion() : "");
-//        document.setAccessKey(message.getAccessKey());
-//        document.setIssuer(message.getIssuer());
-//        document.setEmisionDate(new Date());
-//        document.setDocumentType(DocumentType.FACTURA);
-//        document.setSignedXml(message.getSignedDocument());
-//        document.setState(auth);
-//        invoiceBean.store(document);
-//    }
+    private void stroreDocument(EmacDocumentSubmissionMessage message, AuthorizationState auth) {
+        Document document = new Document();
+        document.setAuthorizationNumber(authInvoice != null ? authInvoice.getNumeroAutorizacion() : "");
+        document.setAccessKey(message.getAccessKey());
+        document.setIssuer(message.getIssuer());
+        document.setEmisionDate(new Date());
+        document.setDocumentType(DocumentType.FACTURA);
+        document.setSignedXml(message.getSignedDocument());
+        document.setState(auth);
+        invoiceBean.store(document);
+    }
 
 
 }
