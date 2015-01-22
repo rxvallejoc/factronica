@@ -72,24 +72,24 @@ public class EmacDocumentAuthorizationConsumer implements MessageListener {
         }
         LOG.info("Inicia el envio de mail");
         final String authNumber = autorizacion.getNumeroAutorizacion();
+        List<Attachment> attachments = null;
         if ("AUTORIZADO".equals(autorizacion.getEstado())) {
-            saveAuthorizationDocument(message, autorizacion);
-            recordResult(message, InvoicingStatus.AUTORIZED,messagesInTheResponse.toString());
-            message.getSriDocument().setEstadoproceso("AU");
-            message.getSriDocument().setNumeroautorizacion(authNumber);
-            emacInvoiceBean.update(message.getSriDocument());
 
-            List<Attachment> attachments;
             try {
                 attachments = generateAttachments(autorizacion,message, authNumber);
-                sendNotificationToEmail(message, autorizacion, authNumber, attachments);
+                saveAuthorizationDocument(message, autorizacion, attachments);
+                recordResult(message, InvoicingStatus.AUTORIZED, messagesInTheResponse.toString());
+                message.getSriDocument().setEstadoproceso("AU");
+                message.getSriDocument().setNumeroautorizacion(authNumber);
+                emacInvoiceBean.update(message.getSriDocument());
             } catch (InvoicePrintException e) {
                 message.getSriDocument().setEstadoproceso("NA");
                 message.getSriDocument().setMensajeerror("Falla al crear el adjunto");
                 emacInvoiceBean.update(message.getSriDocument());
-                recordResult(message, InvoicingStatus.FAILED_TO_GENERATE_ATTACHEMETS,e.getMessage());
+                recordResult(message, InvoicingStatus.FAILED_TO_GENERATE_ATTACHEMETS, e.getMessage());
                 LOG.error("access key = " + message.getAccessKey(), e);
             }
+            sendNotificationToEmail(message, autorizacion, authNumber, attachments);
         } else {
             recordResult(message, InvoicingStatus.NOT_AUTORIZED,messagesInTheResponse.toString());
             message.getSriDocument().setEstadoproceso("NA");
@@ -112,7 +112,14 @@ public class EmacDocumentAuthorizationConsumer implements MessageListener {
                                          final Autorizacion autorizacion, String authNumber, List<Attachment> attachments) {
         try {
             final String email = message.getSriDocument().getEmail();
-            final String emailBody = "Estimado Cliente,\n\nAdjunto enviamos el Documento Electr\u00f3nico Muchas Gracias.\n\n\n\nN\u00famero de Autorizaci\u00f3n: %s Fecha Autorizaci\u00f3n: %s \nClave Acceso: %s";
+            final String emailBody = "Estimado Cliente," +
+                    "\n\nsirvase encontrar adjunto la factura Electr\u00f3nica por nuestros productos y servicios.  " +
+                    " \n\n\n\nN\u00famero de Autorizaci\u00f3n: %s Fecha Autorizaci\u00f3n: %s \nClave Acceso: %s  " +
+                    "\n\n"+
+                    " Atentamente, " +
+                    "\n\n\n\n" +
+                    " EMAC_EP";
+
             final MailMessage multiPartMessage = new MailMessageBuilder()
                     .from(message.getIssuer().getContactMail())
                     .addTo(email)
@@ -149,7 +156,7 @@ public class EmacDocumentAuthorizationConsumer implements MessageListener {
     }
 
     private void saveAuthorizationDocument(final EmacDocumentSubmissionMessage message,
-                                           final Autorizacion autorizacion) {
+                                           final Autorizacion autorizacion, List<Attachment> attachments) {
         Document document = new Document();
         document.setAuthorizationNumber(autorizacion.getNumeroAutorizacion());
         document.setAccessKey(message.getAccessKey());
@@ -158,6 +165,7 @@ public class EmacDocumentAuthorizationConsumer implements MessageListener {
         document.setDocumentType(DocumentType.FACTURA);
         document.setSignedXml(autorizacion.getComprobante().getBytes());
         document.setState(AuthorizationState.AUTORIZADO);
+        document.setDocumentPdf(attachments.get(1).getAttachment());
         invoiceBean.store(document);
     }
 
