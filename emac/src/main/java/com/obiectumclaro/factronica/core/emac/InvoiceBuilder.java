@@ -21,7 +21,10 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Stateless
 public class InvoiceBuilder {
@@ -44,9 +47,9 @@ public class InvoiceBuilder {
             sriDocument.setClaveacceso(accessKeyString);
 
             signedInvoice.setInfoTributaria(getTaxInformation(accessKey,issuer));
-            signedInvoice.setInfoFactura(getInfoFactura(sriDocument,issuer));
-            signedInvoice.setVersion("1.1.0");
             signedInvoice.setDetalles(getDetalles(sriDocument));
+            signedInvoice.setInfoFactura(getInfoFactura(sriDocument, issuer, signedInvoice.getDetalles()));
+            signedInvoice.setVersion("1.1.0");
 //            List<AdditionaInformationCustomer> addicionalInfoList = sriDocument.getAdditionalInfoList();
 //            if(!addicionalInfoList.isEmpty()){
 //                signedInvoice.setInfoAdicional(getInfoAdicional(addicionalInfoList));
@@ -95,7 +98,7 @@ public class InvoiceBuilder {
         return taxInformation;
     }
 
-    private SignedInvoice.InfoFactura getInfoFactura(DocumentoSri sriDocument, Issuer issuer) {
+    private SignedInvoice.InfoFactura getInfoFactura(DocumentoSri sriDocument, Issuer issuer, SignedInvoice.Detalles detalles) {
         SignedInvoice.InfoFactura infoFactura = new SignedInvoice.InfoFactura();
         infoFactura.setFechaEmision(DateUtil.getFormatedDate(new Date(), "dd/MM/yyyy"));
         //Aqui se tiene que poner si es contribuyente especial
@@ -111,54 +114,97 @@ public class InvoiceBuilder {
         //Aqui se tiene que poner la moneda
         infoFactura.setMoneda(sriDocument.getMoneda());
         infoFactura.setImporteTotal(sriDocument.getImportetotal());
-        SignedInvoice.InfoFactura.TotalConImpuestos tc = new SignedInvoice.InfoFactura.TotalConImpuestos();
+        SignedInvoice.InfoFactura.TotalConImpuestos totalConImpuestos = new SignedInvoice.InfoFactura.TotalConImpuestos();
 
+        List<Tax> taxes = new ArrayList<>();
+
+        detalles.getDetalle().forEach(d -> taxes.addAll(d.getImpuestos().getImpuesto()));
+        List<Tax> zeroTaxes = taxes.stream().filter(p -> p.getCodigoPorcentaje().equals("0")).collect(Collectors.toList());
+        if(!zeroTaxes.isEmpty()){
+            BigDecimal zeroTaxesValor = zeroTaxes.stream()
+                    .map(Tax::getValor)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal zeroTaxesBaseImponible = zeroTaxes.stream()
+                    .map(Tax::getBaseImponible)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            SignedInvoice.InfoFactura.TotalConImpuestos.TotalImpuesto totalImpuesto = new SignedInvoice.InfoFactura.TotalConImpuestos.TotalImpuesto();
+            totalImpuesto.setCodigo("2");
+            totalImpuesto.setCodigoPorcentaje("0");
+            totalImpuesto.setTarifa(BigDecimal.valueOf(0L));
+            totalImpuesto.setValor(zeroTaxesValor.setScale(2,BigDecimal.ROUND_UP));
+            totalImpuesto.setBaseImponible(zeroTaxesBaseImponible.setScale(2,BigDecimal.ROUND_UP));
+            totalConImpuestos.getTotalImpuesto().add(totalImpuesto);
+        }
+
+        List<Tax> twoTaxes = taxes.stream().filter(p -> p.getCodigoPorcentaje().equals("2")).collect(Collectors.toList());
+        if(!twoTaxes.isEmpty()){
+            BigDecimal twoTaxesValor = twoTaxes.stream()
+                    .map(Tax::getValor)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+            BigDecimal twoTaxesBaseImponible= twoTaxes.stream()
+                    .map(Tax::getBaseImponible)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
             SignedInvoice.InfoFactura.TotalConImpuestos.TotalImpuesto totalImpuesto = new SignedInvoice.InfoFactura.TotalConImpuestos.TotalImpuesto();
             totalImpuesto.setCodigo("2");
             totalImpuesto.setCodigoPorcentaje("2");
             totalImpuesto.setTarifa(BigDecimal.valueOf(12L));
-            totalImpuesto.setValor(sriDocument.getTotalimpuestos());
-            totalImpuesto.setBaseImponible(sriDocument.getTotalsinimpuestos());
-            tc.getTotalImpuesto().add(totalImpuesto);
+            totalImpuesto.setValor(twoTaxesValor.setScale(2, BigDecimal.ROUND_UP));
+            totalImpuesto.setBaseImponible(twoTaxesBaseImponible.setScale(2, BigDecimal.ROUND_UP));
+            totalConImpuestos.getTotalImpuesto().add(totalImpuesto);
+        }
 
-        infoFactura.setTotalConImpuestos(tc);
+
+        infoFactura.setTotalConImpuestos(totalConImpuestos);
         return infoFactura;
     }
+
+
+
 
     private SignedInvoice.Detalles getDetalles(final DocumentoSri sriDocument){
 
         SignedInvoice.Detalles detalles= new SignedInvoice.Detalles();
-        for(DetalleDocumentoSri item: sriDocument.getDetalleDocumentoSri()){
+        for(DetalleDocumentoSri detalleDocumentoSri: sriDocument.getDetalleDocumentoSri()){
             SignedInvoice.Detalles.Detalle detalle= new SignedInvoice.Detalles.Detalle();
-            detalle.setCantidad(item.getCantidad());
+            detalle.setCantidad(detalleDocumentoSri.getCantidad());
 
             //Bug Parameter INTERPRET_EMPTY_STRING_SUBMITTED_VALUES_AS_NULL true in web.xml
             //http://stackoverflow.com/questions/6304025/work-around-for-faulty-interpret-empty-string-submitted-values-as-null-in-mojarr
             //http://forum.primefaces.org/viewtopic.php?f=3&t=22667
             //http://code.google.com/p/primefaces/issues/detail?id=4083
-            final String alternateCode = item.getCodAuxuliar();
+            final String alternateCode = detalleDocumentoSri.getCodAuxuliar();
             if (alternateCode != null && alternateCode.equals("")) {
                 detalle.setCodigoAuxiliar(null);
             }else{
                 detalle.setCodigoAuxiliar(alternateCode);
             }
 
-            detalle.setCodigoPrincipal(item.getCodPrincipal());
-            detalle.setDescripcion(item.getDescripcion());
-            detalle.setDescuento(item.getDescuento());
-            detalle.setPrecioUnitario(item.getPrecioUnitario());
+            detalle.setCodigoPrincipal(detalleDocumentoSri.getCodPrincipal());
+            detalle.setDescripcion(detalleDocumentoSri.getDescripcion());
+            detalle.setDescuento(detalleDocumentoSri.getDescuento());
+            detalle.setPrecioUnitario(detalleDocumentoSri.getPrecioUnitario());
             detalles.getDetalle().add(detalle);
             SignedInvoice.Detalles.Detalle.Impuestos impuestos= new SignedInvoice.Detalles.Detalle.Impuestos();
             //final BigDecimal precioTotalSinImpuestos = item.getProduct().getUnitPrice().multiply(item.getAmount()).subtract(detalle.getDescuento());
-            detalle.setPrecioTotalSinImpuesto(item.getPrecioTotalSnImpuesto());
+            detalle.setPrecioTotalSinImpuesto(detalleDocumentoSri.getPrecioTotalSnImpuesto());
 
+            if(detalleDocumentoSri.getValorIva().compareTo(BigDecimal.ZERO) > 0){
                 Tax tax= new Tax();
-                tax.setBaseImponible(item.getPrecioTotalSnImpuesto());
                 tax.setCodigo("2");
                 tax.setCodigoPorcentaje("2");
-                tax.setValor(item.getValorIva());
                 tax.setTarifa(BigDecimal.valueOf(12L));
+                tax.setBaseImponible(detalleDocumentoSri.getPrecioTotalSnImpuesto());
+                tax.setValor(detalleDocumentoSri.getValorIva());
                 impuestos.getImpuesto().add(tax);
+            }else {
+                Tax tax= new Tax();
+                tax.setCodigo("2");
+                tax.setCodigoPorcentaje("0");
+                tax.setTarifa(BigDecimal.valueOf(0L));
+                tax.setBaseImponible(detalleDocumentoSri.getPrecioTotalSnImpuesto());
+                tax.setValor(detalleDocumentoSri.getValorIva());
+                impuestos.getImpuesto().add(tax);
+            }
 
             detalle.setImpuestos(impuestos);
         }

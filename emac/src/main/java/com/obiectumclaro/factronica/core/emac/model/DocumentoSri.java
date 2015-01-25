@@ -23,35 +23,27 @@ public class DocumentoSri
     @EmbeddedId
     protected DocumentoSriPK documentoSriPK;
 
-    @Size(max = 13)
     @Column(name = "RUC")
     private String ruc;
 
-    @Size(max = 2)
     @Column(name = "CODDOC")
     private String coddoc;
 
-    @Size(max = 3)
     @Column(name = "ESTAB")
     private String estab;
 
-    @Size(max = 3)
     @Column(name = "PTOEMI")
     private String ptoemi;
 
-    @Size(max = 9)
     @Column(name = "SECUENCIAL")
     private String secuencial;
 
-    @Size(max = 2)
     @Column(name = "ESTADO")
     private String estado;
 
-    @Size(max = 37)
     @Column(name = "NUMEROAUTORIZACION")
     private String numeroautorizacion;
 
-    @Size(max = 30)
     @Column(name = "FECHAAUTORIZACION")
     private String fechaautorizacion;
 
@@ -61,51 +53,39 @@ public class DocumentoSri
     @Column(name = "TIPOEMISION")
     private Short tipoemision;
 
-    @Size(max = 99)
     @Column(name = "RAZONSOCIAL")
     private String razonsocial;
 
-    @Size(max = 99)
     @Column(name = "NOMBRECOMERCIAL")
     private String nombrecomercial;
 
-    @Size(max = 49)
     @Column(name = "CLAVEACCESO")
     private String claveacceso;
 
-    @Size(max = 99)
     @Column(name = "DIRMATRIZ")
     private String dirmatriz;
 
-    @Size(max = 10)
     @Column(name = "FECHAEMISION")
     private String fechaemision;
 
-    @Size(max = 99)
     @Column(name = "DIRESTABLECIMIENTO")
     private String direstablecimiento;
 
-    @Size(max = 5)
     @Column(name = "CONTRIBUYENTEESPECIA")
     private String contribuyenteespecia;
 
-    @Size(max = 2)
     @Column(name = "OBLIGADOACONTABILI")
     private String obligadoacontabili;
 
-    @Size(max = 2)
     @Column(name = "TIPOIDENTIFICACION")
     private String tipoidentificacion;
 
-    @Size(max = 17)
     @Column(name = "GUIAREMISION")
     private String guiaremision;
 
-    @Size(max = 99)
     @Column(name = "RAZONSOCIAL1")
     private String razonsocial1;
 
-    @Size(max = 13)
     @Column(name = "IDENTIFICACION")
     private String identificacion;
 
@@ -121,39 +101,30 @@ public class DocumentoSri
     @Column(name = "IMPORTETOTAL")
     private BigDecimal importetotal;
 
-    @Size(max = 15)
     @Column(name = "MONEDA")
     private String moneda;
 
-    @Size(max = 99)
     @Column(name = "CAMPOADICIONALNOMBR")
     private String campoadicionalnombr;
 
-    @Size(max = 7)
     @Column(name = "PERIODOFISCAL")
     private String periodofiscal;
 
-    @Size(max = 99)
     @Column(name = "CONVENIODOBLETRIBU")
     private String conveniodobletribu;
 
-    @Size(max = 40)
     @Column(name = "CONTRIBUYENTERISE")
     private String contribuyenterise;
 
-    @Size(max = 2)
     @Column(name = "CODIGODOCUMENTOMOD")
     private String codigodocumentomod;
 
-    @Size(max = 17)
     @Column(name = "NUMERODOCUMENTOMOD")
     private String numerodocumentomod;
 
-    @Size(max = 10)
     @Column(name = "FECHAEMISIONDOCUME")
     private String fechaemisiondocume;
 
-    @Size(max = 99)
     @Column(name = "MOTIVODELANOTA")
     private String motivodelanota;
 
@@ -166,22 +137,18 @@ public class DocumentoSri
     @Column(name = "TOTALIMPUESTOS")
     private BigDecimal totalimpuestos;
 
-    @Size(max = 60)
     @Column(name = "EMAIL")
     private String email;
 
-    @Size(max = 60)
     @Column(name = "EMAIL1")
     private String email1;
 
-    @Size(max = 2)
     @Column(name = "ESTADOPROCESO")
     private String estadoproceso;
 
     @Column(name = "CODIGOERROR")
     private Short codigoerror;
 
-    @Size(max = 99)
     @Column(name = "MENSAJEERROR")
     private String mensajeerror;
 

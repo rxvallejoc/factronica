@@ -23,15 +23,12 @@ public class DetalleDocumentoSri
     @EmbeddedId
     protected DetalleDocumentoSriPK detalleDocumentoSriPK;
 
-    @Size(max = 25)
     @Column(name = "COD_PRINCIPAL")
     private String codPrincipal;
 
-    @Size(max = 25)
     @Column(name = "COD_AUXULIAR")
     private String codAuxuliar;
 
-    @Size(max = 300)
     @Column(name = "DESCRIPCION")
     private String descripcion;
 
